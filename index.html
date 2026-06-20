@@ -662,11 +662,13 @@ document.getElementById('staffGrid').innerHTML = STAFF.map(s => `
     <div class="staff-role" style="color:${s.color};">${s.role}</div>
   </div>`).join('');
 
-document.getElementById('galleryGrid').innerHTML = GALLERY.map(g => `
-  <div class="gallery-item gallery-placeholder" style="background:${g.grad}">
-    <div>${g.label}</div>
+document.getElementById('galleryGrid').innerHTML = GALLERY.map(g => {
+  const hasImg = g.img !== undefined;
+  return `<div class="gallery-item ${hasImg ? '' : 'gallery-placeholder'}" ${hasImg ? '' : 'style="background:'+g.grad+'"'}>
+    ${hasImg ? '<img src="'+g.img+'" alt="'+g.label+'" style="width:100%;height:100%;object-fit:cover;">' : '<div>'+g.label+'</div>'}
     <div class="gallery-label">${g.label}</div>
-  </div>`).join('');
+  </div>`;
+}).join('');
 
 document.getElementById('faqList').innerHTML = FAQS.map((f, i) => `
   <div class="faq-item" data-idx="${i}" data-search="${(f.q + ' ' + f.a).toLowerCase()}">
