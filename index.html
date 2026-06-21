@@ -658,8 +658,8 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; colo
           <li>Download Dynmap from <a href="https://www.spigotmc.org/resources/dynmap.274/" target="_blank" style="color:var(--emerald);">SpigotMC</a></li>
           <li>Put <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">Dynmap.jar</code> in your server's <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">plugins/</code> folder</li>
           <li>Restart the server</li>
-          <li>Port forward <strong style="color:var(--emerald);">8123</strong> on your server (or ask your host to do it)</li>
-          <li>The map will be available at <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">http://node1.hostingkarle.com:8123</code></li>
+          <li>port forward <strong style="color:var(--emerald);">25571</strong> on your server (or ask your host to do it)</li>
+          <li>The map will be available at <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">http://node1.hostingkarle.com:25571</code></li>
         </ol>
         <p style="color:var(--fg-3);font-size:12px;margin-top:12px;">Once Dynmap is running, this page will automatically show the live map. No website changes needed — just install the plugin.</p>
       </div>
@@ -1012,7 +1012,7 @@ function loadDynmap() {
 
   // Try to load the Dynmap iframe
   // The Dynmap URL would be http://SERVER_IP:8123
-  const dynmapUrl = 'http://node1.hostingkarle.com:8123/';
+  const dynmapUrl = 'http://node1.hostingkarle.com:25571/';
 
   // Create iframe
   const iframe = document.createElement('iframe');
