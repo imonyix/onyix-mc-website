@@ -1,1107 +1,675 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lion MC — Survival SMP Minecraft Server</title>
-<meta name="description" content="Lion MC is a premium Survival SMP Minecraft server. Custom plugins, active community, 24/7 uptime.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="description" content="Lion MC is a community-driven Survival SMP server. Custom plugins, active community, 24/7 uptime. No pay-to-win.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0d12; --bg-2: #0f131a; --bg-3: #161b24;
-  --fg: #e8eaf0; --fg-2: #a0a4b0; --fg-3: #5c606c;
-  --emerald: #2ecc71; --emerald-glow: rgba(46,204,113,0.4); --emerald-2: #27ae60;
-  --gold: #f1c40f; --orange: #e67e22;
-  --border: rgba(255,255,255,0.08); --border-2: rgba(255,255,255,0.12);
-  --glass: rgba(255,255,255,0.03); --glass-2: rgba(255,255,255,0.05);
-  --font-sans: 'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  --font-mono: 'JetBrains Mono','SF Mono',Monaco,Consolas,monospace;
-}
-[data-theme="light"] {
-  --bg: #f5f7fa; --bg-2: #ffffff; --bg-3: #eef1f5;
-  --fg: #1a1d24; --fg-2: #4a5060; --fg-3: #8088a0;
-  --border: rgba(0,0,0,0.08); --border-2: rgba(0,0,0,0.12);
-  --glass: rgba(0,0,0,0.02); --glass-2: rgba(0,0,0,0.04);
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
-body { background:var(--bg); color:var(--fg); font-family:var(--font-sans); font-weight:400; line-height:1.6; overflow-x:hidden; }
-body::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background-image:linear-gradient(rgba(46,204,113,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(46,204,113,0.02) 1px,transparent 1px);
-  background-size:48px 48px; mask-image:radial-gradient(ellipse at top,black 20%,transparent 70%); -webkit-mask-image:radial-gradient(ellipse at top,black 20%,transparent 70%); }
-a { color:inherit; text-decoration:none; }
-button { font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
-.container { max-width:1200px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
-.page { display:none; animation:fadeIn 0.3s ease; }
-.page.active { display:block; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+:root{--bg:#0a0d12;--bg2:#0f131a;--bg3:#161b24;--fg:#e8eaf0;--fg2:#a0a4b0;--fg3:#5c606c;--em:#2ecc71;--emg:rgba(46,204,113,.4);--em2:#27ae60;--gold:#f1c40f;--orange:#e67e22;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.12);--glass:rgba(255,255,255,.03);--glass2:rgba(255,255,255,.05);--fs:'Inter',sans-serif;--fm:'JetBrains Mono',monospace}
+[data-theme=light]{--bg:#f5f7fa;--bg2:#fff;--bg3:#eef1f5;--fg:#1a1d24;--fg2:#4a5060;--fg3:#8088a0;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.12);--glass:rgba(0,0,0,.02);--glass2:rgba(0,0,0,.04)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--fg);font-family:var(--fs);line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(46,204,113,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(46,204,113,.02) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse at top,black 20%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at top,black 20%,transparent 70%)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+img{max-width:100%;display:block}
+.ctn{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.page{display:none;animation:fi .3s ease}.page.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* NAV */
-.nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 0; transition:all 0.3s; border-bottom:1px solid transparent; }
-.nav.scrolled { background:rgba(10,13,18,0.85); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom-color:var(--border); padding:10px 0; }
-[data-theme="light"] .nav.scrolled { background:rgba(255,255,255,0.85); }
-.nav-inner { display:flex; align-items:center; justify-content:space-between; max-width:1200px; margin:0 auto; padding:0 24px; }
-.logo { display:flex; align-items:center; gap:10px; font-weight:800; font-size:20px; letter-spacing:-0.03em; cursor:pointer; }
-.logo-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--emerald),var(--emerald-2)); border-radius:8px; display:grid; place-items:center; font-size:20px; box-shadow:0 0 20px var(--emerald-glow); }
-.logo span { color:var(--emerald); }
-.nav-links { display:flex; align-items:center; gap:24px; }
-.nav-link { color:var(--fg-2); font-size:14px; font-weight:500; transition:color 0.2s; cursor:pointer; position:relative; }
-.nav-link:hover, .nav-link.active { color:var(--emerald); }
-.nav-link.active::after { content:''; position:absolute; bottom:-4px; left:0; right:0; height:2px; background:var(--emerald); border-radius:1px; }
-.nav-right { display:flex; align-items:center; gap:10px; }
-.theme-toggle { width:38px; height:38px; border:1px solid var(--border-2); border-radius:8px; background:var(--glass); display:grid; place-items:center; font-size:16px; transition:all 0.2s; }
-.theme-toggle:hover { border-color:var(--emerald); }
-.btn { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; font-size:14px; font-weight:600; border-radius:8px; transition:all 0.2s; white-space:nowrap; }
-.btn-primary { background:var(--emerald); color:#000; box-shadow:0 0 0 1px var(--emerald),0 8px 24px -8px var(--emerald-glow); }
-.btn-primary:hover { background:#3edd82; transform:translateY(-1px); }
-.btn-ghost { color:var(--fg-2); border:1px solid var(--border-2); background:var(--glass); }
-.btn-ghost:hover { color:var(--fg); border-color:var(--emerald); }
-.mobile-toggle { display:none; }
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 0;transition:.3s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(10,13,18,.85);backdrop-filter:blur(16px);border-bottom-color:var(--border);padding:10px 0}
+[data-theme=light] .nav.scrolled{background:rgba(255,255,255,.85)}
+.ni{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0 24px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.03em;cursor:pointer}
+.li{width:36px;height:36px;background:linear-gradient(135deg,var(--em),var(--em2));border-radius:8px;display:grid;place-items:center;font-size:20px;box-shadow:0 0 20px var(--emg)}
+.logo b{color:var(--em)}
+.nl{display:flex;align-items:center;gap:22px}
+.nl a{color:var(--fg2);font-size:14px;font-weight:500;transition:.2s;cursor:pointer}
+.nl a:hover,.nl a.active{color:var(--em)}
+.nl a.active::after{content:'';display:block;height:2px;background:var(--em);border-radius:1px;margin-top:3px}
+.nr{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;font-size:14px;font-weight:600;border-radius:8px;transition:.2s;white-space:nowrap}
+.btn-p{background:var(--em);color:#000;box-shadow:0 0 0 1px var(--em),0 8px 24px -8px var(--emg)}
+.btn-p:hover{background:#3edd82;transform:translateY(-1px)}
+.btn-g{color:var(--fg2);border:1px solid var(--border2);background:var(--glass)}
+.btn-g:hover{color:var(--fg);border-color:var(--em)}
+.btn-l{padding:14px 28px;font-size:15px}
+.tt{width:38px;height:38px;border:1px solid var(--border2);border-radius:8px;background:var(--glass);display:grid;place-items:center;font-size:16px}
+.mt{display:none}
 
 /* HERO */
-.hero { min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:120px 24px 60px; position:relative; overflow:hidden; }
-.hero-bg { position:absolute; inset:0; z-index:0; pointer-events:none; }
-.hero-bg::before,.hero-bg::after { content:''; position:absolute; border-radius:50%; filter:blur(80px); opacity:0.4; }
-.hero-bg::before { width:500px; height:500px; background:radial-gradient(circle,var(--emerald) 0%,transparent 70%); top:-5%; left:-10%; animation:float 20s ease-in-out infinite; }
-.hero-bg::after { width:400px; height:400px; background:radial-gradient(circle,var(--gold) 0%,transparent 70%); bottom:-5%; right:-10%; animation:float 25s ease-in-out infinite reverse; }
-@keyframes float { 0%,100%{transform:translate(0,0);} 33%{transform:translate(40px,-30px);} 66%{transform:translate(-30px,30px);} }
-.hero-inner { position:relative; z-index:1; max-width:800px; }
-.badge { display:inline-flex; align-items:center; gap:8px; padding:6px 14px; background:var(--glass-2); border:1px solid var(--border-2); border-radius:999px; font-size:12px; font-weight:500; color:var(--fg-2); margin-bottom:24px; font-family:var(--font-mono); }
-.badge-dot { width:6px; height:6px; background:var(--emerald); border-radius:50%; box-shadow:0 0 8px var(--emerald); animation:pulse 2s ease-in-out infinite; }
-.badge-dot.offline { background:#e74c3c; box-shadow:0 0 8px #e74c3c; }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-.hero h1 { font-size:clamp(44px,7vw,84px); font-weight:900; letter-spacing:-0.04em; line-height:0.95; margin-bottom:20px; }
-.hero h1 .grad { background:linear-gradient(135deg,var(--emerald) 0%,var(--gold) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
-.hero p { font-size:clamp(16px,2vw,19px); color:var(--fg-2); max-width:580px; margin:0 auto 28px; }
-.ip-box { display:inline-flex; align-items:center; gap:12px; background:var(--bg-3); border:1px solid var(--border-2); border-radius:12px; padding:12px 20px; margin-bottom:24px; }
-.ip-box .ip-label { color:var(--fg-3); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; }
-.ip-box .ip-text { color:var(--emerald); font-family:var(--font-mono); font-size:16px; font-weight:700; }
-.copy-btn { padding:6px 12px; background:var(--emerald); color:#000; border-radius:6px; font-size:12px; font-weight:700; transition:all 0.2s; }
-.copy-btn:hover { background:#3edd82; transform:scale(1.05); }
-.copy-btn.copied { background:var(--gold); }
-.hero-cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:40px; }
-.btn-lg { padding:14px 28px; font-size:15px; }
-.hero-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; max-width:600px; margin:0 auto; }
-.stat-value { font-size:28px; font-weight:800; font-family:var(--font-mono); background:linear-gradient(135deg,var(--emerald) 0%,var(--gold) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
-.stat-label { font-size:11px; color:var(--fg-3); text-transform:uppercase; letter-spacing:0.1em; margin-top:4px; }
-.server-status { display:inline-flex; align-items:center; gap:8px; padding:6px 14px; background:var(--glass-2); border:1px solid var(--border); border-radius:999px; font-size:13px; font-family:var(--font-mono); margin-bottom:20px; }
-.status-dot { width:8px; height:8px; border-radius:50%; background:var(--emerald); box-shadow:0 0 8px var(--emerald); animation:pulse 2s infinite; }
-.status-dot.offline { background:#e74c3c; box-shadow:0 0 8px #e74c3c; }
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 60px;position:relative;overflow:hidden}
+.hbg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hbg::before,.hbg::after{content:'';position:absolute;border-radius:50%;filter:blur(80px);opacity:.4}
+.hbg::before{width:500px;height:500px;background:radial-gradient(circle,var(--em) 0%,transparent 70%);top:-5%;left:-10%;animation:fl 20s ease-in-out infinite}
+.hbg::after{width:400px;height:400px;background:radial-gradient(circle,var(--gold) 0%,transparent 70%);bottom:-5%;right:-10%;animation:fl 25s ease-in-out infinite reverse}
+@keyframes fl{0%,100%{transform:translate(0,0)}33%{transform:translate(40px,-30px)}66%{transform:translate(-30px,30px)}}
+.hi{position:relative;z-index:1;max-width:800px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--glass2);border:1px solid var(--border2);border-radius:999px;font-size:12px;font-weight:500;color:var(--fg2);margin-bottom:20px;font-family:var(--fm)}
+.bd{width:6px;height:6px;background:var(--em);border-radius:50%;box-shadow:0 0 8px var(--em);animation:p 2s infinite}
+.bd.off{background:#e74c3c;box-shadow:0 0 8px #e74c3c}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(44px,7vw,84px);font-weight:900;letter-spacing:-.04em;line-height:.95;margin-bottom:18px}
+.hero h1 b{background:linear-gradient(135deg,var(--em) 0%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:clamp(16px,2vw,19px);color:var(--fg2);max-width:560px;margin:0 auto 24px}
+.ipb{display:inline-flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px 20px;margin-bottom:20px}
+.ipb .il{color:var(--fg3);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+.ipb .ip{color:var(--em);font-family:var(--fm);font-size:16px;font-weight:700}
+.cb{padding:6px 12px;background:var(--em);color:#000;border-radius:6px;font-size:12px;font-weight:700;transition:.2s}
+.cb:hover{background:#3edd82;transform:scale(1.05)}.cb.cop{background:var(--gold)}
+.hc{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
+.hs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:560px;margin:0 auto}
+.sv{font-size:26px;font-weight:800;font-family:var(--fm);background:linear-gradient(135deg,var(--em) 0%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sl{font-size:11px;color:var(--fg3);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
 
 /* SECTIONS */
-.section { padding:80px 0; position:relative; }
-.section-header { text-align:center; max-width:650px; margin:0 auto 48px; }
-.section-tag { display:inline-block; font-family:var(--font-mono); font-size:12px; color:var(--emerald); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:12px; }
-.section-header h2 { font-size:clamp(32px,4.5vw,48px); font-weight:800; letter-spacing:-0.03em; line-height:1.05; margin-bottom:12px; }
-.section-header p { font-size:16px; color:var(--fg-2); }
+.sec{padding:80px 0;position:relative}
+.sh{text-align:center;max-width:650px;margin:0 auto 44px}
+.st{display:inline-block;font-family:var(--fm);font-size:12px;color:var(--em);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
+.sh h2{font-size:clamp(30px,4.5vw,46px);font-weight:800;letter-spacing:-.03em;margin-bottom:10px}
+.sh p{font-size:16px;color:var(--fg2)}
 
-/* FEATURE CARDS */
-.features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
-.feature-card { background:var(--glass); border:1px solid var(--border); border-radius:14px; padding:24px; transition:all 0.3s; position:relative; overflow:hidden; }
-.feature-card::before { content:''; position:absolute; top:0; right:0; width:100px; height:100px; background:radial-gradient(circle,var(--fc,var(--emerald)) 0%,transparent 70%); opacity:0; transition:opacity 0.4s; filter:blur(40px); }
-.feature-card:hover { border-color:var(--border-2); transform:translateY(-2px); }
-.feature-card:hover::before { opacity:0.12; }
-.feature-icon { width:44px; height:44px; border-radius:10px; background:var(--glass-2); border:1px solid var(--border); display:grid; place-items:center; margin-bottom:16px; font-size:22px; }
-.feature-card h3 { font-size:17px; font-weight:700; margin-bottom:6px; }
-.feature-card p { font-size:13px; color:var(--fg-2); line-height:1.5; }
+/* CARDS */
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.fc{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:24px;transition:.3s;position:relative;overflow:hidden}
+.fc::before{content:'';position:absolute;top:0;right:0;width:100px;height:100px;background:radial-gradient(circle,var(--c,var(--em)) 0%,transparent 70%);opacity:0;transition:.4s;filter:blur(40px)}
+.fc:hover{border-color:var(--border2);transform:translateY(-2px)}.fc:hover::before{opacity:.12}
+.fi{width:44px;height:44px;border-radius:10px;background:var(--glass2);border:1px solid var(--border);display:grid;place-items:center;margin-bottom:14px;font-size:22px}
+.fc h3{font-size:17px;font-weight:700;margin-bottom:5px}.fc p{font-size:13px;color:var(--fg2);line-height:1.5}
 
-/* JOIN STEPS */
-.join-section { background:var(--bg-2); }
-.join-steps { max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
-.join-step { background:var(--glass); border:1px solid var(--border); border-radius:12px; padding:20px; display:flex; gap:20px; align-items:flex-start; transition:all 0.2s; }
-.join-step:hover { border-color:var(--border-2); }
-.step-num { font-family:var(--font-mono); font-size:28px; font-weight:800; background:linear-gradient(135deg,var(--emerald),var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent; flex-shrink:0; width:48px; }
-.step-content h3 { font-size:16px; font-weight:700; margin-bottom:4px; }
-.step-content p { font-size:14px; color:var(--fg-2); }
-.step-code { display:inline-block; margin-top:8px; padding:6px 12px; background:#000; border:1px solid var(--border); border-radius:6px; font-family:var(--font-mono); font-size:13px; color:var(--emerald); }
+/* JOIN */
+.js{background:var(--bg2)}
+.jsteps{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.jstep{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;gap:20px;align-items:flex-start;transition:.2s}
+.jstep:hover{border-color:var(--border2)}
+.sn{font-family:var(--fm);font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--em),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;flex-shrink:0;width:48px}
+.jstep h3{font-size:16px;font-weight:700;margin-bottom:3px}.jstep p{font-size:14px;color:var(--fg2)}
+.scode{display:inline-block;margin-top:8px;padding:6px 12px;background:#000;border:1px solid var(--border);border-radius:6px;font-family:var(--fm);font-size:13px;color:var(--em)}
 
 /* RULES */
-.rules-section { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; max-width:900px; margin:0 auto; }
-.rule-category { background:var(--glass); border:1px solid var(--border); border-radius:14px; padding:24px; }
-.rule-category h3 { font-size:18px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-.rule-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
-.rule-list li { font-size:14px; color:var(--fg-2); padding-left:20px; position:relative; }
-.rule-list li::before { content:'→'; position:absolute; left:0; color:var(--emerald); }
+.rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:900px;margin:0 auto}
+.rc{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:24px}
+.rc h3{font-size:18px;font-weight:700;margin-bottom:14px}
+.rl{list-style:none;display:flex;flex-direction:column;gap:8px}
+.rl li{font-size:14px;color:var(--fg2);padding-left:18px;position:relative}
+.rl li::before{content:'\203A';position:absolute;left:0;color:var(--em);font-weight:700}
 
 /* STAFF */
-.staff-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; max-width:900px; margin:0 auto; }
-.staff-card { background:var(--glass); border:1px solid var(--border); border-radius:14px; padding:24px; text-align:center; transition:all 0.2s; }
-.staff-card:hover { border-color:var(--emerald); transform:translateY(-2px); }
-.staff-avatar { width:64px; height:64px; border-radius:12px; margin:0 auto 12px; display:grid; place-items:center; font-size:32px; }
-.staff-name { font-size:16px; font-weight:700; margin-bottom:4px; }
-.staff-role { font-size:13px; font-family:var(--font-mono); }
-.staff-app-cta { text-align:center; margin-top:40px; }
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:900px;margin:0 auto}
+.sc{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;transition:.2s}
+.sc:hover{border-color:var(--em);transform:translateY(-2px)}
+.sa{width:64px;height:64px;border-radius:12px;margin:0 auto 12px;overflow:hidden;border:2px solid var(--c,var(--em));background:var(--bg3)}
+.sa img{width:100%;height:100%;object-fit:cover}
+.sph{display:grid;place-items:center;font-size:32px;width:100%;height:100%}
+.sname{font-size:16px;font-weight:700;margin-bottom:3px}
+.srole{font-size:13px;font-family:var(--fm);color:var(--c,var(--em))}
 
 /* GALLERY */
-.gallery-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; max-width:1000px; margin:0 auto; }
-.gallery-item { aspect-ratio:16/9; border-radius:12px; overflow:hidden; position:relative; cursor:pointer; border:1px solid var(--border); }
-.gallery-item:hover { border-color:var(--emerald); transform:scale(1.02); transition:all 0.3s; }
-.gallery-item img { width:100%; height:100%; object-fit:cover; }
-.gallery-label { position:absolute; bottom:0; left:0; right:0; padding:12px; background:linear-gradient(transparent,rgba(0,0,0,0.8)); color:#fff; font-size:14px; font-weight:600; }
-.gallery-placeholder { display:grid; place-items:center; background:linear-gradient(135deg,var(--bg-3),var(--bg-2)); color:var(--fg-3); font-family:var(--font-mono); font-size:13px; }
+.gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;max-width:1000px;margin:0 auto}
+.gi{aspect-ratio:16/9;border-radius:12px;overflow:hidden;position:relative;border:1px solid var(--border);transition:.3s}
+.gi:hover{border-color:var(--em);transform:scale(1.02)}
+.gi img{width:100%;height:100%;object-fit:cover}
+.gl{position:absolute;bottom:0;left:0;right:0;padding:12px;background:linear-gradient(transparent,rgba(0,0,0,.8));color:#fff;font-size:14px;font-weight:600}
+.gp{display:grid;place-items:center;width:100%;height:100%;background:var(--bg3);color:var(--fg3);font-family:var(--fm);font-size:13px}
 
 /* FAQ */
-.faq-list { max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:10px; }
-.faq-item { background:var(--glass); border:1px solid var(--border); border-radius:10px; overflow:hidden; transition:all 0.2s; }
-.faq-item:hover { border-color:var(--border-2); }
-.faq-item.open { border-color:var(--emerald); }
-.faq-q { padding:16px 20px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-size:15px; font-weight:600; width:100%; text-align:left; }
-.faq-q:hover { color:var(--emerald); }
-.faq-toggle { font-size:18px; color:var(--fg-3); transition:transform 0.2s; flex-shrink:0; }
-.faq-item.open .faq-toggle { transform:rotate(45deg); color:var(--emerald); }
-.faq-a { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
-.faq-item.open .faq-a { max-height:300px; }
-.faq-a-inner { padding:0 20px 16px; font-size:14px; color:var(--fg-2); line-height:1.6; }
-.faq-search { max-width:500px; margin:0 auto 32px; display:flex; gap:8px; }
-.faq-search input { flex:1; padding:12px 16px; background:var(--bg-3); border:1px solid var(--border-2); border-radius:8px; color:var(--fg); font-size:15px; font-family:var(--font-sans); }
-.faq-search input:focus { outline:none; border-color:var(--emerald); }
+.faql{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.faqi{background:var(--glass);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:.2s}
+.faqi:hover{border-color:var(--border2)}.faqi.open{border-color:var(--em)}
+.faq{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:15px;font-weight:600;width:100%;text-align:left}
+.faq:hover{color:var(--em)}
+.ft{font-size:18px;color:var(--fg3);transition:.2s;flex-shrink:0}
+.faqi.open .ft{transform:rotate(45deg);color:var(--em)}
+.faqas{max-height:0;overflow:hidden;transition:.3s}
+.faqi.open .faqas{max-height:300px}
+.faqai{padding:0 20px 16px;font-size:14px;color:var(--fg2)}
+.fsearch{max-width:500px;margin:0 auto 32px}
+.fsearch input{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--fg);font-size:15px;font-family:var(--fs)}
+.fsearch input:focus{outline:none;border-color:var(--em)}
 
 /* CHANGELOG */
-.changelog-list { max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
-.changelog-item { background:var(--glass); border:1px solid var(--border); border-radius:12px; padding:20px 24px; }
-.changelog-version { display:inline-block; font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--emerald); background:rgba(46,204,113,0.1); padding:4px 10px; border-radius:6px; border:1px solid rgba(46,204,113,0.2); margin-bottom:8px; }
-.changelog-date { font-size:12px; color:var(--fg-3); font-family:var(--font-mono); margin-bottom:8px; }
-.changelog-item ul { list-style:none; display:flex; flex-direction:column; gap:4px; }
-.changelog-item li { font-size:14px; color:var(--fg-2); padding-left:16px; position:relative; }
-.changelog-item li::before { content:'+'; position:absolute; left:0; color:var(--emerald); }
-.changelog-item li.fix::before { content:'×'; color:var(--orange); }
+.cl{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.ci{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.cv{display:inline-block;font-family:var(--fm);font-size:14px;font-weight:700;color:var(--em);background:rgba(46,204,113,.1);padding:4px 10px;border-radius:6px;border:1px solid rgba(46,204,113,.2);margin-bottom:8px}
+.cd{font-size:12px;color:var(--fg3);font-family:var(--fm);margin-bottom:8px}
+.ci ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+.ci li{font-size:14px;color:var(--fg2);padding-left:16px;position:relative}
+.ci li::before{content:'+';position:absolute;left:0;color:var(--em)}
+.ci li.fix::before{content:'\00D7';color:var(--orange)}
 
-/* DISCORD CTA */
-.discord-section { padding:60px 0; text-align:center; position:relative; overflow:hidden; }
-.discord-bg { position:absolute; inset:0; background:radial-gradient(ellipse at center,rgba(88,101,242,0.12) 0%,transparent 60%); z-index:0; }
-.discord-inner { position:relative; z-index:1; max-width:550px; margin:0 auto; padding:0 24px; }
-.discord-inner h2 { font-size:clamp(28px,4vw,40px); font-weight:800; letter-spacing:-0.03em; margin-bottom:10px; }
-.discord-inner p { font-size:16px; color:var(--fg-2); margin-bottom:24px; }
-.btn-discord { background:#5865F2; color:#fff; padding:14px 32px; font-size:15px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:10px; transition:all 0.2s; box-shadow:0 8px 24px -8px rgba(88,101,242,0.5); }
-.btn-discord:hover { background:#4752c4; transform:translateY(-1px); }
+/* STORE */
+.store-hero{text-align:center;padding:20px 0 40px}
+.p2w{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;background:rgba(46,204,113,.1);border:1px solid var(--em);border-radius:999px;font-size:13px;font-weight:600;color:var(--em);margin-bottom:20px}
+.sst{text-align:center;font-size:22px;font-weight:800;margin:40px 0 24px}
+.rkg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;max-width:1100px;margin:0 auto}
+.rkc{background:var(--glass);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:.3s;position:relative}
+.rkc:hover{transform:translateY(-4px);border-color:var(--rc,var(--em));box-shadow:0 12px 40px -8px var(--rc,var(--emg))}
+.rkc.best{border:2px solid var(--em)}
+.rbt{position:absolute;top:0;left:0;right:0;background:var(--em);color:#000;font-size:11px;font-weight:800;text-align:center;padding:5px 0;text-transform:uppercase;letter-spacing:.1em}
+.rkh{padding:32px 20px 16px;text-align:center;background:linear-gradient(180deg,var(--rb,rgba(46,204,113,.05)) 0%,transparent 100%)}
+.rki{font-size:40px;margin-bottom:8px}
+.rkn{font-size:20px;font-weight:800;margin-bottom:4px}
+.rkt{font-size:11px;font-weight:600;color:var(--rc,var(--em));text-transform:uppercase;letter-spacing:.15em}
+.rkp{font-size:36px;font-weight:900;margin:12px 0 4px}
+.rkp2{font-size:16px;color:var(--fg3);text-decoration:line-through}
+.rkf{list-style:none;padding:16px 20px}
+.rkf li{font-size:13px;color:var(--fg2);padding:5px 0;padding-left:24px;position:relative}
+.rkf li::before{content:'\2713';position:absolute;left:0;color:var(--em);font-weight:700}
+.rkf li.no::before{content:'\2717';color:var(--fg3)}.rkf li.no{color:var(--fg3)}
+.rkb{display:block;margin:0 20px 20px;padding:12px;text-align:center;border-radius:8px;font-size:14px;font-weight:700;transition:.2s;background:var(--rc,var(--em));color:#000}
+.rkb.gh{background:var(--glass2);color:var(--fg);border:1px solid var(--border2)}
+.rkb:hover{filter:brightness(1.1);transform:scale(1.02)}
+.crg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;max-width:1000px;margin:0 auto}
+.crc{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:24px 16px;text-align:center;transition:.3s}
+.crc:hover{transform:translateY(-3px);border-color:var(--cc,var(--gold))}
+.cri{font-size:36px;margin-bottom:8px}.crn{font-size:16px;font-weight:700;margin-bottom:4px}
+.crd{font-size:12px;color:var(--fg2);margin-bottom:12px;min-height:32px}
+.crp{font-size:24px;font-weight:900;color:var(--cc,var(--gold));margin-bottom:12px}.crp.free{color:var(--em)}
+.cm{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:900px;margin:0 auto}
+.cmc{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:20px 12px;text-align:center;transition:.2s}
+.cmc:hover{border-color:var(--em);transform:translateY(-2px)}.cmci{font-size:28px;margin-bottom:6px}
+.cmcn{font-size:14px;font-weight:600;margin-bottom:4px}.cmcp{font-size:18px;font-weight:800;color:var(--gold)}
+
+/* DYNMAP */
+.dynmap-frame{width:100%;height:600px;border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:1000px;margin:0 auto 24px;background:var(--bg3)}
+.dynmap-frame iframe{width:100%;height:100%;border:none}
+.dynmap-placeholder{display:grid;place-items:center;width:100%;height:100%;color:var(--fg3);text-align:center;font-family:var(--fm)}
+
+/* PLAYERS */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:1000px;margin:0 auto}
+.pcard{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;gap:16px;align-items:center}
+.pavatar{width:48px;height:48px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--bg3)}
+.pavatar img{width:100%;height:100%}.pname{font-size:16px;font-weight:700}
+.pstatus{font-size:12px;color:var(--em);margin-top:2px}
+
+/* DISCORD */
+.ds{padding:60px 0;text-align:center;position:relative;overflow:hidden}
+.dsbg{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(88,101,242,.12) 0%,transparent 60%);z-index:0}
+.dsi{position:relative;z-index:1;max-width:550px;margin:0 auto;padding:0 24px}
+.dsi h2{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.03em;margin-bottom:10px}
+.dsi p{font-size:16px;color:var(--fg2);margin-bottom:24px}
+.btn-d{background:#5865F2;color:#fff;padding:14px 32px;font-size:15px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:10px;transition:.2s;box-shadow:0 8px 24px -8px rgba(88,101,242,.5)}
+.btn-d:hover{background:#4752c4;transform:translateY(-1px)}
 
 /* FOOTER */
-.footer { border-top:1px solid var(--border); padding:40px 0 24px; background:var(--bg-2); }
-.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; margin-bottom:24px; }
-.footer-brand p { font-size:13px; color:var(--fg-3); margin-top:10px; max-width:280px; }
-.footer-col h4 { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--fg-3); margin-bottom:12px; }
-.footer-col a { display:block; font-size:14px; color:var(--fg-2); margin-bottom:6px; transition:color 0.2s; cursor:pointer; }
-.footer-col a:hover { color:var(--emerald); }
-.footer-bottom { padding-top:20px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--fg-3); flex-wrap:wrap; gap:8px; }
+.ft{border-top:1px solid var(--border);padding:40px 0 24px;background:var(--bg2)}
+.fg2{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:24px}
+.fb p{font-size:13px;color:var(--fg3);margin-top:10px;max-width:280px}
+.fc2 h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fg3);margin-bottom:12px}
+.fc2 a{display:block;font-size:14px;color:var(--fg2);margin-bottom:6px;transition:.2s;cursor:pointer}
+.fc2 a:hover{color:var(--em)}
+.fb2{padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;color:var(--fg3);flex-wrap:wrap;gap:8px}
 
 /* RESPONSIVE */
-@media (max-width:768px) {
-  .nav-links { display:none; }
-  .nav-links.open { display:flex; position:absolute; top:100%; left:0; right:0; flex-direction:column; background:var(--bg-2); padding:20px 24px; border-bottom:1px solid var(--border); gap:14px; }
-  .mobile-toggle { display:grid; place-items:center; width:40px; height:40px; border:1px solid var(--border); border-radius:8px; background:var(--glass); }
-  .hero { padding:100px 20px 40px; }
-  .hero-stats { grid-template-columns:repeat(2,1fr); gap:16px; }
-  .section { padding:50px 0; }
-  .join-step { flex-direction:column; gap:8px; }
-  .step-num { width:auto; font-size:22px; }
-  .footer-grid { grid-template-columns:1fr 1fr; gap:24px; }
-  .ip-box { flex-direction:column; gap:8px; }
+@media(max-width:768px){
+.nl{display:none}
+.nl.open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--bg2);padding:20px 24px;border-bottom:1px solid var(--border);gap:14px}
+.mt{display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--border);border-radius:8px;background:var(--glass)}
+.hero{padding:100px 20px 40px}
+.hs{grid-template-columns:repeat(2,1fr);gap:14px}
+.sec{padding:50px 0}
+.jstep{flex-direction:column;gap:8px}.sn{width:auto;font-size:22px}
+.fg2{grid-template-columns:1fr 1fr;gap:24px}
+.ipb{flex-direction:column;gap:8px}
 }
 </style>
-</head>
-<body>
+</head><body>
 
-<!-- NAV -->
 <nav class="nav" id="nav">
-  <div class="nav-inner">
-    <div class="logo" onclick="navigate('home')">
-      <div class="logo-icon">🌱</div>
-      <span>Lion<span>MC</span></span>
-    </div>
-    <div class="nav-links" id="navLinks">
-      <span class="nav-link" data-page="home" onclick="navigate('home')">Home</span>
-      <span class="nav-link" data-page="features" onclick="navigate('features')">Features</span>
-      <span class="nav-link" data-page="rules" onclick="navigate('rules')">Rules</span>
-      <span class="nav-link" data-page="staff" onclick="navigate('staff')">Staff</span>
-      <span class="nav-link" data-page="dynmap" onclick="navigate('dynmap')">Map</span>
-      <span class="nav-link" data-page="players" onclick="navigate('players')">Players</span>
-      <span class="nav-link" data-page="store" onclick="navigate('store')">Store</span>
-      <span class="nav-link" data-page="gallery" onclick="navigate('gallery')">Gallery</span>
-      <span class="nav-link" data-page="faq" onclick="navigate('faq')">FAQ</span>
-      <span class="nav-link" data-page="changelog" onclick="navigate('changelog')">Changelog</span>
-    </div>
-    <div class="nav-right">
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-      <a href="#" class="btn btn-primary" onclick="navigate('home')">Play Now</a>
-      <button class="mobile-toggle" id="mobileToggle" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
-    </div>
-  </div>
+<div class="ni">
+<div class="logo" onclick="nav('home')"><div class="li">&#129409;</div>Lion<b>MC</b></div>
+<div class="nl" id="nl">
+<a data-p="home" onclick="nav('home')">Home</a>
+<a data-p="features" onclick="nav('features')">Features</a>
+<a data-p="store" onclick="nav('store')">Store</a>
+<a data-p="players" onclick="nav('players')">Players</a>
+<a data-p="dynmap" onclick="nav('dynmap')">Map</a>
+<a data-p="rules" onclick="nav('rules')">Rules</a>
+<a data-p="staff" onclick="nav('staff')">Staff</a>
+<a data-p="gallery" onclick="nav('gallery')">Gallery</a>
+<a data-p="faq" onclick="nav('faq')">FAQ</a>
+<a data-p="changelog" onclick="nav('changelog')">Updates</a>
+</div>
+<div class="nr">
+<button class="tt" onclick="toggleTheme()">&#127769;</button>
+<a href="https://discord.gg/VXy4pRqEQN" target="_blank" class="btn btn-p">Discord</a>
+<button class="mt" onclick="document.getElementById('nl').classList.toggle('open')">&#9776;</button>
+</div>
+</div>
 </nav>
 
-<!-- ============ HOME PAGE ============ -->
-<div class="page active" id="page-home">
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-inner">
-      <div class="server-status" id="serverStatus">
-        <span class="status-dot" id="statusDot"></span>
-        <span id="statusText">Checking server status...</span>
-      </div>
-      <div class="badge">
-        <span class="badge-dot"></span>
-        <span>Survival SMP · Java + Bedrock · 1.21.4</span>
-      </div>
-      <h1>Build. Survive.<br><span class="grad">Thrive.</span></h1>
-      <p>Lion MC is a community-driven Survival SMP server with custom plugins, land claiming, an active economy, and zero pay-to-win. Just pure survival Minecraft.</p>
-      <div class="ip-box">
-        <span class="ip-label">Server IP</span>
-        <span class="ip-text">node1.hostingkarle.com:25565</span>
-        <button class="copy-btn" id="copyBtn" onclick="copyIP()">Copy</button>
-      </div>
-      <div class="hero-cta">
-        <a href="#" class="btn btn-primary btn-lg" onclick="navigate('features')">🎮 Explore Features</a>
-        <a href="#" class="btn btn-ghost btn-lg" onclick="navigate('home'); scrollToJoin()">📋 How to Join</a>
-      </div>
-      <div class="hero-stats" id="heroStats">
-        <div><div class="stat-value" id="statPlayers">—</div><div class="stat-label">Players Online</div></div>
-        <div><div class="stat-value" id="statMax">—</div><div class="stat-label">Max Slots</div></div>
-        <div><div class="stat-value">1.21.4</div><div class="stat-label">Version</div></div>
-        <div><div class="stat-value">0</div><div class="stat-label">Pay to Win</div></div>
-      </div>
-    </div>
-  </section>
+<!-- HOME -->
+<div class="page active" id="p-home">
+<section class="hero">
+<div class="hbg"></div>
+<div class="hi">
+<div class="badge"><span class="bd" id="sd"></span><span id="stxt">Checking status...</span></div>
+<h1>Build. Survive.<br><b>Thrive.</b></h1>
+<p>Lion MC is a community-driven Survival SMP. Custom plugins, active community, 24/7 uptime. Zero pay-to-win.</p>
+<div class="ipb">
+<span class="il">Server IP</span>
+<span class="ip" id="iptxt">node1.hostingkarle.com:25565</span>
+<button class="cb" id="cb" onclick="copyIP()">Copy</button>
+</div>
+<div class="hc">
+<button class="btn btn-p btn-l" onclick="nav('features')">Explore Features</button>
+<a href="https://discord.gg/VXy4pRqEQN" target="_blank" class="btn btn-g btn-l">Join Discord</a>
+</div>
+<div class="hs">
+<div><div class="sv" id="hpo">--</div><div class="sl">Players Online</div></div>
+<div><div class="sv" id="hpm">--</div><div class="sl">Max Slots</div></div>
+<div><div class="sv">1.21.4</div><div class="sl">Version</div></div>
+<div><div class="sv">0</div><div class="sl">Pay to Win</div></div>
+</div>
+</div>
+</section>
 
-  <section class="section" id="join">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">GET STARTED</div>
-        <h2>Join in 3 steps.</h2>
-        <p>It takes less than a minute to start playing.</p>
-      </div>
-      <div class="join-steps">
-        <div class="join-step"><div class="step-num">01</div><div class="step-content"><h3>Open Minecraft Java Edition</h3><p>Launch Minecraft Java Edition 1.21.4 (or any 1.21.x version).</p></div></div>
-        <div class="join-step"><div class="step-num">02</div><div class="step-content"><h3>Add Server</h3><p>Multiplayer → Add Server → Enter the IP below.</p><div class="step-code">node1.hostingkarle.com:25565</div></div></div>
-        <div class="join-step"><div class="step-num">03</div><div class="step-content"><h3>Join and Play!</h3><p>Click "Join Server". Type /spawn for info, /rules for rules, /help for commands.</p></div></div>
-      </div>
-    </div>
-  </section>
+<section class="sec" style="background:var(--bg2)">
+<div class="ctn">
+<div class="sh"><div class="st">GET STARTED</div><h2>Join in 3 steps</h2><p>Less than a minute to start playing.</p></div>
+<div class="jsteps">
+<div class="jstep"><div class="sn">01</div><div><h3>Open Minecraft Java</h3><p>Launch Minecraft Java Edition 1.21.4</p></div></div>
+<div class="jstep"><div class="sn">02</div><div><h3>Add Server</h3><p>Multiplayer &#8594; Add Server &#8594; Enter IP</p><div class="scode">node1.hostingkarle.com:25565</div></div></div>
+<div class="jstep"><div class="sn">03</div><div><h3>Play!</h3><p>Click Join Server. Type /spawn for info, /rules for rules.</p></div></div>
+</div>
+</div>
+</section>
 
-  <section class="section" style="background:var(--bg-2)">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">FEATURES</div>
-        <h2>Why Lion MC?</h2>
-        <p>Click any feature to learn more on the dedicated features page.</p>
-      </div>
-      <div class="features-grid" id="homeFeatures"></div>
-      <div style="text-align:center; margin-top:32px;">
-        <a href="#" class="btn btn-ghost btn-lg" onclick="navigate('features')">View All Features →</a>
-      </div>
-    </div>
-  </section>
+<section class="sec">
+<div class="ctn">
+<div class="sh"><div class="st">HIGHLIGHTS</div><h2>Why Lion MC?</h2></div>
+<div class="fg" id="homeFeatures"></div>
+<div style="text-align:center;margin-top:32px"><button class="btn btn-g btn-l" onclick="nav('features')">All Features &#8594;</button></div>
+</div>
+</section>
 
-  <section class="discord-section">
-    <div class="discord-bg"></div>
-    <div class="discord-inner">
-      <div style="font-size:48px; margin-bottom:16px;">💬</div>
-      <h2>Join the Lion MC community.</h2>
-      <p>Get help, share builds, vote for rewards, and apply for staff — all in our Discord.</p>
-      <a href="https://discord.gg/VXy4pRqEQN" target="_blank" class="btn-discord">Join Discord</a>
-    </div>
-  </section>
+<section class="ds"><div class="dsbg"></div><div class="dsi"><div style="font-size:48px;margin-bottom:16px">&#128172;</div><h2>Join the community</h2><p>Get help, share builds, vote for rewards, apply for staff.</p><a href="https://discord.gg/VXy4pRqEQN" target="_blank" class="btn-d">Join Discord</a></div></section>
 </div>
 
-<!-- ============ FEATURES PAGE ============ -->
-<div class="page" id="page-features">
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">SERVER FEATURES</div>
-        <h2>Everything Lion MC offers.</h2>
-        <p>Carefully selected features that enhance survival gameplay without ruining the vanilla feel.</p>
-      </div>
-      <div class="features-grid" id="allFeatures"></div>
-    </div>
-  </section>
-  <section class="section" style="background:var(--bg-2)">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">CUSTOM PLUGINS</div>
-        <h2>Built just for Lion MC.</h2>
-        <p>We develop our own plugins tailored to our community's needs.</p>
-      </div>
-      <div class="features-grid" id="customPlugins"></div>
-    </div>
-  </section>
+<!-- FEATURES -->
+<div class="page" id="p-features">
+<section class="sec" style="padding-top:120px">
+<div class="ctn">
+<div class="sh"><div class="st">SERVER FEATURES</div><h2>Everything Lion MC offers</h2><p>Features that enhance survival without ruining the vanilla feel.</p></div>
+<div class="fg" id="allFeatures"></div>
+</div>
+</section>
+<section class="sec" style="background:var(--bg2)">
+<div class="ctn">
+<div class="sh"><div class="st">CUSTOM PLUGINS</div><h2>Built just for Lion MC</h2></div>
+<div class="fg" id="customPlugins"></div>
+</div>
+</section>
 </div>
 
-<!-- ============ RULES PAGE ============ -->
-<div class="page" id="page-rules">
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">SERVER RULES</div>
-        <h2>Keep it fun for everyone.</h2>
-        <p>Breaking these rules results in warnings, mutes, jails, or bans depending on severity.</p>
-      </div>
-      <div class="rules-section" id="rulesGrid"></div>
-      <div style="text-align:center; margin-top:40px;">
-        <p style="color:var(--fg-3); font-size:14px;">Staff have final say on all rule interpretations. If something feels wrong, it probably is. Use common sense.</p>
-      </div>
-    </div>
-  </section>
+<!-- STORE -->
+<div class="page" id="p-store">
+<section class="sec" style="padding-top:120px">
+<div class="ctn">
+<div class="store-hero">
+<div class="p2w">&#9878;&#65039; No Pay-to-Win &#8212; Cosmetic Only</div>
+<h2 style="font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.03em">Support Lion MC</h2>
+<p style="color:var(--fg2);max-width:500px;margin:8px auto 0">Every purchase keeps the server running. All items are cosmetic or convenience only.</p>
+</div>
+<div class="sst">&#128081; Cosmetic Ranks</div>
+<div class="rkg" id="storeRanks"></div>
+<div class="sst">&#128230; Treasure Crates</div>
+<div class="crg" id="storeCrates"></div>
+<div class="sst">&#127912; Individual Cosmetics</div>
+<div class="cm" id="storeCosmetics"></div>
+<div style="text-align:center;max-width:500px;margin:48px auto;padding:32px;background:var(--glass);border:1px solid var(--border);border-radius:16px">
+<div style="font-size:36px;margin-bottom:12px">&#9878;&#65039;</div>
+<h3 style="font-size:20px;font-weight:800;margin-bottom:8px">No Pay-to-Win. Period.</h3>
+<p style="color:var(--fg2);font-size:14px;line-height:1.7">Every player has the same survival experience. Store items are <b style="color:var(--em)">cosmetic only</b> &#8212; chat colors, particles, prefixes, and convenience. No rank gives extra damage, fly, or P2W kits.</p>
+</div>
+</div>
+</section>
 </div>
 
-<!-- ============ STAFF PAGE ============ -->
-<div class="page" id="page-staff">
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">OUR TEAM</div>
-        <h2>Meet the staff.</h2>
-        <p>The people who keep Lion MC running smoothly.</p>
-      </div>
-      <div class="staff-grid" id="staffGrid"></div>
-      <div class="staff-app-cta">
-        <div style="background:var(--glass); border:1px solid var(--border); border-radius:14px; padding:32px; max-width:500px; margin:0 auto;">
-          <h3 style="font-size:22px; font-weight:800; margin-bottom:8px;">Want to join the team?</h3>
-          <p style="color:var(--fg-2); margin-bottom:20px;">We're always looking for dedicated players to join our staff team. Apply via our Discord server.</p>
-          <a href="https://discord.gg/VXy4pRqEQN" target="_blank" class="btn btn-primary btn-lg">Apply for Staff</a>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- PLAYERS -->
+<div class="page" id="p-players">
+<section class="sec" style="padding-top:120px">
+<div class="ctn">
+<div class="sh"><div class="st">PLAYER DIRECTORY</div><h2>Who's online?</h2><p>Live player list from the server.</p></div>
+<div class="fsearch"><input type="text" placeholder="Search by username..." oninput="filterPlayers()"></div>
+<div class="pgrid" id="playersGrid"></div>
+</div>
+</section>
 </div>
 
-<!-- ============ GALLERY PAGE ============ -->
-<div class="page" id="page-gallery">
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">GALLERY</div>
-        <h2>Player builds & server.</h2>
-        <p>Amazing creations from the Lion MC community. Want yours featured? Share in Discord!</p>
-      </div>
-      <div class="gallery-grid" id="galleryGrid"></div>
-    </div>
-  </section>
+<!-- DYNMAP -->
+<div class="page" id="p-dynmap">
+<section class="sec" style="padding-top:120px">
+<div class="ctn">
+<div class="sh"><div class="st">WORLD MAP</div><h2>Live Server Map</h2><p>Explore the Lion MC world in real-time.</p></div>
+<div class="dynmap-frame" id="dynmapFrame">
+<div class="dynmap-placeholder"><div><div style="font-size:48px;margin-bottom:16px">&#128506;&#65039;</div><p>Map loading...</p><p style="font-size:12px;margin-top:8px">If it doesn't appear, Dynmap may not be installed.</p></div></div>
+</div>
+<div style="max-width:700px;margin:0 auto;padding:24px;background:var(--glass);border:1px solid var(--border);border-radius:14px">
+<h3 style="font-size:18px;font-weight:700;margin-bottom:12px">How to enable the live map</h3>
+<p style="color:var(--fg2);font-size:14px;margin-bottom:12px">The map requires the Dynmap plugin installed on your server:</p>
+<ol style="color:var(--fg2);font-size:14px;padding-left:20px;line-height:1.8">
+<li>Download Dynmap from SpigotMC</li>
+<li>Put Dynmap.jar in plugins/ folder</li>
+<li>Set webserver-port to 25571 in configuration.txt</li>
+<li>Restart server and run <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--em)">dynmap fullrender</code></li>
+</ol>
+</div>
+</div>
+</section>
 </div>
 
-<!-- ============ FAQ PAGE ============ -->
-<div class="page" id="page-faq">
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">FAQ</div>
-        <h2>Frequently asked questions.</h2>
-      </div>
-      <div class="faq-search">
-        <input type="text" id="faqSearchInput" placeholder="Search questions..." oninput="filterFAQ()">
-      </div>
-      <div class="faq-list" id="faqList"></div>
-    </div>
-  </section>
+<!-- RULES -->
+<div class="page" id="p-rules">
+<section class="sec" style="padding-top:120px">
+<div class="ctn">
+<div class="sh"><div class="st">SERVER RULES</div><h2>Keep it fun for everyone</h2><p>Breaking these results in warnings, mutes, jails, or bans.</p></div>
+<div class="rg" id="rulesGrid"></div>
+</div>
+</section>
 </div>
 
-
-<!-- ============ STORE PAGE ============ -->
-<div class="page" id="page-store">
-  <style>
-    .store-hero { text-align:center; padding:40px 0; }
-    .store-hero h2 { font-size:clamp(28px,4vw,42px); font-weight:900; letter-spacing:-0.03em; margin-bottom:8px; }
-    .store-hero p { color:var(--fg-2); max-width:500px; margin:0 auto; }
-    .p2w-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 16px; background:rgba(46,204,113,0.1); border:1px solid var(--emerald); border-radius:999px; font-size:13px; font-weight:600; color:var(--emerald); margin-bottom:24px; }
-
-    .store-section-title { text-align:center; font-size:22px; font-weight:800; margin:48px 0 24px; display:flex; align-items:center; justify-content:center; gap:10px; }
-    .store-section-title span { font-size:28px; }
-
-    .rank-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; max-width:1100px; margin:0 auto; }
-    .rank-card { background:var(--glass); border:1px solid var(--border); border-radius:16px; padding:0; overflow:hidden; transition:all 0.3s; position:relative; }
-    .rank-card:hover { transform:translateY(-4px); border-color:var(--rc,var(--emerald)); box-shadow:0 12px 40px -8px var(--rc,var(--emerald-glow)); }
-    .rank-card.best { border:2px solid var(--emerald); }
-    .rank-best-tag { position:absolute; top:0; left:0; right:0; background:var(--emerald); color:#000; font-size:11px; font-weight:800; text-align:center; padding:5px 0; text-transform:uppercase; letter-spacing:0.1em; }
-    .rank-header { padding:32px 20px 16px; text-align:center; background:linear-gradient(180deg,var(--rc-bg,rgba(46,204,113,0.05)) 0%,transparent 100%); }
-    .rank-icon { font-size:40px; margin-bottom:8px; }
-    .rank-name { font-size:20px; font-weight:800; margin-bottom:4px; }
-    .rank-tier { font-size:11px; font-weight:600; color:var(--rc,var(--emerald)); text-transform:uppercase; letter-spacing:0.15em; }
-    .rank-price { font-size:36px; font-weight:900; color:var(--fg); margin:12px 0 4px; }
-    .rank-price-old { font-size:16px; color:var(--fg-3); text-decoration:line-through; }
-    .rank-features { list-style:none; padding:16px 20px; }
-    .rank-features li { font-size:13px; color:var(--fg-2); padding:5px 0; padding-left:24px; position:relative; }
-    .rank-features li::before { content:'\2713'; position:absolute; left:0; color:var(--emerald); font-weight:700; }
-    .rank-features li.no::before { content:'\2717'; color:var(--fg-3); }
-    .rank-features li.no { color:var(--fg-3); }
-    .rank-btn { display:block; margin:0 20px 20px; padding:12px; text-align:center; border-radius:8px; font-size:14px; font-weight:700; transition:all 0.2s; cursor:pointer; }
-    .rank-btn-primary { background:var(--rc,var(--emerald)); color:#000; }
-    .rank-btn-primary:hover { filter:brightness(1.1); transform:scale(1.02); }
-    .rank-btn-ghost { background:var(--glass-2); color:var(--fg); border:1px solid var(--border-2); }
-    .rank-btn-ghost:hover { border-color:var(--rc,var(--emerald)); }
-
-    .crate-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; max-width:1000px; margin:0 auto; }
-    .crate-card { background:var(--glass); border:1px solid var(--border); border-radius:14px; padding:24px 16px; text-align:center; transition:all 0.3s; position:relative; overflow:hidden; }
-    .crate-card:hover { transform:translateY(-3px); border-color:var(--cc,var(--gold)); box-shadow:0 8px 30px -8px var(--cc,var(--gold)); }
-    .crate-card::before { content:''; position:absolute; top:-40px; right:-40px; width:100px; height:100px; background:radial-gradient(circle,var(--cc,var(--gold)) 0%,transparent 70%); opacity:0.1; }
-    .crate-icon { font-size:36px; margin-bottom:8px; }
-    .crate-name { font-size:16px; font-weight:700; margin-bottom:4px; }
-    .crate-desc { font-size:12px; color:var(--fg-2); margin-bottom:12px; min-height:32px; }
-    .crate-price { font-size:24px; font-weight:900; color:var(--cc,var(--gold)); margin-bottom:12px; }
-    .crate-price.free { color:var(--emerald); }
-
-    .bundle-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; max-width:800px; margin:0 auto; }
-    .bundle-card { background:var(--glass); border:1px solid var(--border); border-radius:14px; padding:24px; display:flex; gap:20px; align-items:center; transition:all 0.3s; }
-    .bundle-card:hover { border-color:var(--emerald); transform:translateY(-2px); }
-    .bundle-icon { font-size:40px; flex-shrink:0; }
-    .bundle-info { flex:1; }
-    .bundle-name { font-size:17px; font-weight:700; margin-bottom:4px; }
-    .bundle-desc { font-size:13px; color:var(--fg-2); margin-bottom:8px; }
-    .bundle-prices { display:flex; align-items:center; gap:8px; }
-    .bundle-old { font-size:16px; color:var(--fg-3); text-decoration:line-through; }
-    .bundle-new { font-size:24px; font-weight:900; color:var(--emerald); }
-    .bundle-save { font-size:11px; font-weight:700; color:var(--gold); background:rgba(241,196,15,0.1); padding:2px 8px; border-radius:4px; }
-
-    .cosmetic-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; max-width:900px; margin:0 auto; }
-    .cosmetic-card { background:var(--glass); border:1px solid var(--border); border-radius:12px; padding:20px 12px; text-align:center; transition:all 0.2s; }
-    .cosmetic-card:hover { border-color:var(--emerald); transform:translateY(-2px); }
-    .cosmetic-icon { font-size:28px; margin-bottom:6px; }
-    .cosmetic-name { font-size:14px; font-weight:600; margin-bottom:4px; }
-    .cosmetic-price { font-size:18px; font-weight:800; color:var(--gold); }
-
-    .store-cta { text-align:center; margin:48px 0; }
-    .store-cta-box { max-width:500px; margin:0 auto; padding:32px; background:var(--glass); border:1px solid var(--border); border-radius:16px; }
-  </style>
-
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <!-- HERO -->
-      <div class="store-hero">
-        <div class="p2w-badge">⚖️ No Pay-to-Win — Cosmetic Only</div>
-        <h2>Support Lion MC</h2>
-        <p>Every purchase keeps the server running. All items are <strong style="color:var(--emerald);">cosmetic or convenience</strong> — zero gameplay advantage.</p>
-      </div>
-
-      <!-- RANKS -->
-      <div class="store-section-title"><span>❄️</span> Server Ranks</div>
-      <div class="rank-grid">
-
-        <!-- VIP -->
-        <div class="rank-card" style="--rc:#3498db; --rc-bg:rgba(52,152,219,0.06);">
-          <div class="rank-header">
-            <div class="rank-icon">⭐</div>
-            <div class="rank-tier">Basic</div>
-            <div class="rank-name">VIP</div>
-            <div class="rank-price">£3.99</div>
-            <div class="rank-price-old">£5.99</div>
-          </div>
-          <ul class="rank-features">
-            <li>Blue chat color</li>
-            <li>/hat command</li>
-            <li>5 home slots</li>
-            <li>VIP prefix</li>
-            <li>Access to /kit vip (weekly)</li>
-            <li class="no">No particle effects</li>
-          </ul>
-          <a href="#" class="rank-btn rank-btn-ghost">Choose VIP</a>
-        </div>
-
-        <!-- VIP+ -->
-        <div class="rank-card best" style="--rc:#e67e22; --rc-bg:rgba(230,126,34,0.06);">
-          <div class="rank-best-tag">⭐ Best Value</div>
-          <div class="rank-header" style="padding-top:40px;">
-            <div class="rank-icon">✨</div>
-            <div class="rank-tier">Popular</div>
-            <div class="rank-name">VIP+</div>
-            <div class="rank-price">£6.99</div>
-            <div class="rank-price-old">£9.99</div>
-          </div>
-          <ul class="rank-features">
-            <li>Orange chat color</li>
-            <li>/hat + /nick + /particle</li>
-            <li>10 home slots</li>
-            <li>VIP+ prefix</li>
-            <li>Access to /kit vip+ (weekly)</li>
-            <li>2 Common crate keys</li>
-            <li>Custom join message</li>
-          </ul>
-          <a href="#" class="rank-btn rank-btn-primary">Choose VIP+</a>
-        </div>
-
-        <!-- Ice -->
-        <div class="rank-card" style="--rc:#00bcd4; --rc-bg:rgba(0,188,212,0.06);">
-          <div class="rank-header">
-            <div class="rank-icon">❄️</div>
-            <div class="rank-tier">Premium</div>
-            <div class="rank-name">Ice</div>
-            <div class="rank-price">£9.99</div>
-            <div class="rank-price-old">£14.99</div>
-          </div>
-          <ul class="rank-features">
-            <li>Cyan chat color</li>
-            <li>/hat + /nick + /particle</li>
-            <li>15 home slots</li>
-            <li>Ice prefix</li>
-            <li>Access to /kit ice (daily)</li>
-            <li>3 Rare crate keys</li>
-            <li>Ice particle trail</li>
-            <li>Custom join message</li>
-          </ul>
-          <a href="#" class="rank-btn rank-btn-ghost">Choose Ice</a>
-        </div>
-
-        <!-- Lion -->
-        <div class="rank-card" style="--rc:#f1c40f; --rc-bg:rgba(241,196,15,0.06);">
-          <div class="rank-header">
-            <div class="rank-icon">🦁</div>
-            <div class="rank-tier">Ultimate</div>
-            <div class="rank-name">Lion</div>
-            <div class="rank-price">£14.99</div>
-            <div class="rank-price-old">£24.99</div>
-          </div>
-          <ul class="rank-features">
-            <li>Gold chat color</li>
-            <li>All cosmetic commands</li>
-            <li>20 home slots</li>
-            <li>Lion prefix</li>
-            <li>Access to /kit lion (daily)</li>
-            <li>5 Mythic crate keys</li>
-            <li>Custom wing particles</li>
-            <li>Animated prefix</li>
-            <li>Priority support</li>
-          </ul>
-          <a href="#" class="rank-btn rank-btn-ghost">Choose Lion</a>
-        </div>
-
-      </div>
-
-      <!-- CRATES -->
-      <div class="store-section-title"><span>📦</span> Treasure Crates</div>
-      <div class="crate-grid">
-        <div class="crate-card" style="--cc:#2ecc71;">
-          <div class="crate-icon">📦</div>
-          <div class="crate-name">Voter Crate</div>
-          <div class="crate-desc">Free with /vote. Cosmetics, tags, QoL items.</div>
-          <div class="crate-price free">FREE</div>
-          <a href="#" class="rank-btn rank-btn-ghost" style="margin:0;">Vote Now</a>
-        </div>
-        <div class="crate-card" style="--cc:#e67e22;">
-          <div class="crate-icon">🎁</div>
-          <div class="crate-name">Common Crate</div>
-          <div class="crate-desc">Name colors, trails, chat tags.</div>
-          <div class="crate-price">£1.49</div>
-          <a href="#" class="rank-btn rank-btn-ghost" style="margin:0;background:rgba(230,126,34,0.15);color:#e67e22;border-color:rgba(230,126,34,0.3);">Buy Key</a>
-        </div>
-        <div class="crate-card" style="--cc:#9b59b6;">
-          <div class="crate-icon">💜</div>
-          <div class="crate-name">Rare Crate</div>
-          <div class="crate-desc">Rare particles, glow, join messages.</div>
-          <div class="crate-price">£2.99</div>
-          <a href="#" class="rank-btn rank-btn-ghost" style="margin:0;background:rgba(155,89,182,0.15);color:#9b59b6;border-color:rgba(155,89,182,0.3);">Buy Key</a>
-        </div>
-        <div class="crate-card" style="--cc:#e74c3c;">
-          <div class="crate-icon">🔥</div>
-          <div class="crate-name">Mythic Crate</div>
-          <div class="crate-desc">Wings, death messages, unique prefix.</div>
-          <div class="crate-price">£4.99</div>
-          <a href="#" class="rank-btn rank-btn-ghost" style="margin:0;background:rgba(231,76,60,0.15);color:#e74c3c;border-color:rgba(231,76,60,0.3);">Buy Key</a>
-        </div>
-        <div class="crate-card" style="--cc:#f1c40f;">
-          <div class="crate-icon">⭐</div>
-          <div class="crate-name">Legendary Crate</div>
-          <div class="crate-desc">Exclusive cosmetics, animated tags, aurora effects.</div>
-          <div class="crate-price">£7.99</div>
-          <a href="#" class="rank-btn rank-btn-ghost" style="margin:0;background:rgba(241,196,15,0.15);color:#f1c40f;border-color:rgba(241,196,15,0.3);">Buy Key</a>
-        </div>
-      </div>
-
-      <!-- COSMETICS -->
-      <div class="store-section-title"><span>🎨</span> Individual Cosmetics</div>
-      <div class="cosmetic-grid">
-        <div class="cosmetic-card"><div class="cosmetic-icon">✈️</div><div class="cosmetic-name">Nickname Color</div><div class="cosmetic-price">£0.99</div></div>
-        <div class="cosmetic-card"><div class="cosmetic-icon">✨</div><div class="cosmetic-name">Particle Trail</div><div class="cosmetic-price">£1.49</div></div>
-        <div class="cosmetic-card"><div class="cosmetic-icon">💬</div><div class="cosmetic-name">Chat Tag</div><div class="cosmetic-price">£0.99</div></div>
-        <div class="cosmetic-card"><div class="cosmetic-icon">🚀</div><div class="cosmetic-name">Custom Join Msg</div><div class="cosmetic-price">£1.99</div></div>
-        <div class="cosmetic-card"><div class="cosmetic-icon">🐝</div><div class="cosmetic-name">Death Message</div><div class="cosmetic-price">£1.99</div></div>
-        <div class="cosmetic-card"><div class="cosmetic-icon">💍</div><div class="cosmetic-name">Glow Effect</div><div class="cosmetic-price">£2.49</div></div>
-        <div class="cosmetic-card"><div class="cosmetic-icon">🪶</div><div class="cosmetic-name">Wing Particles</div><div class="cosmetic-price">£3.99</div></div>
-        <div class="cosmetic-card"><div class="cosmetic-icon">🌊</div><div class="cosmetic-name">Aura Effect</div><div class="cosmetic-price">£3.99</div></div>
-      </div>
-
-      <!-- P2W GUARANTEE -->
-      <div class="store-cta">
-        <div class="store-cta-box">
-          <div style="font-size:36px;margin-bottom:12px;">⚖️</div>
-          <h3 style="font-size:20px;font-weight:800;margin-bottom:8px;">No Pay-to-Win. Period.</h3>
-          <p style="color:var(--fg-2);font-size:14px;line-height:1.7;">Every player has the same survival experience. Store items are <strong style="color:var(--emerald);">cosmetic only</strong> — chat colors, particles, prefixes, and convenience (more homes). No rank gives extra damage, fly, god mode, or P2W kits. <strong style="color:var(--emerald);">Skill wins, not wallet.</strong></p>
-        </div>
-      </div>
-
-    </div>
-  </section>
+<!-- STAFF -->
+<div class="page" id="p-staff">
+<section class="sec" style="padding-top:120px">
+<div class="ctn">
+<div class="sh"><div class="st">OUR TEAM</div><h2>Meet the staff</h2></div>
+<div class="sg" id="staffGrid"></div>
+<div style="text-align:center;margin-top:40px">
+<div style="background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:32px;max-width:500px;margin:0 auto">
+<h3 style="font-size:22px;font-weight:800;margin-bottom:8px">Want to join the team?</h3>
+<p style="color:var(--fg2);margin-bottom:20px">Apply via our Discord server.</p>
+<a href="https://discord.gg/VXy4pRqEQN" target="_blank" class="btn btn-p btn-l">Apply for Staff</a>
+</div>
+</div>
+</div>
+</section>
 </div>
 
-
-<!-- ============ DYNMAP PAGE ============ -->
-<div class="page" id="page-dynmap">
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">WORLD MAP</div>
-        <h2>Live Server Map</h2>
-        <p>Explore the Lion MC world in real-time. See player locations, claims, and terrain.</p>
-      </div>
-
-      <div style="max-width:1000px;margin:0 auto 24px;background:var(--glass);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-        <div id="dynmapContainer" style="width:100%;height:600px;display:grid;place-items:center;color:var(--fg-3);font-family:var(--font-mono);font-size:14px;text-align:center;padding:40px;">
-          <div>
-            <div style="font-size:48px;margin-bottom:16px;">🗺️</div>
-            <p>Map loading...</p>
-            <p style="font-size:12px;margin-top:8px;">If the map doesn't appear, Dynmap is not installed on the server yet.</p>
-          </div>
-        </div>
-      </div>
-
-      <div style="max-width:700px;margin:0 auto;padding:24px;background:var(--glass);border:1px solid var(--border);border-radius:14px;">
-        <h3 style="font-size:18px;font-weight:700;margin-bottom:12px;">📋 How to Enable the Live Map</h3>
-        <p style="color:var(--fg-2);font-size:14px;margin-bottom:12px;">The live map requires the Dynmap plugin installed on your Minecraft server. Here's how to set it up:</p>
-        <ol style="color:var(--fg-2);font-size:14px;padding-left:20px;line-height:1.8;">
-          <li>Download Dynmap from <a href="https://www.spigotmc.org/resources/dynmap.274/" target="_blank" style="color:var(--emerald);">SpigotMC</a></li>
-          <li>Put <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">Dynmap.jar</code> in your server's <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">plugins/</code> folder</li>
-          <li>Restart the server</li>
-          <li>port forward <strong style="color:var(--emerald);">25571</strong> on your server (or ask your host to do it)</li>
-          <li>The map will be available at <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">http://node1.hostingkarle.com:25571</code></li>
-        </ol>
-        <p style="color:var(--fg-3);font-size:12px;margin-top:12px;">Once Dynmap is running, this page will automatically show the live map. No website changes needed — just install the plugin.</p>
-      </div>
-    </div>
-  </section>
+<!-- GALLERY -->
+<div class="page" id="p-gallery">
+<section class="sec" style="padding-top:120px">
+<div class="ctn">
+<div class="sh"><div class="st">GALLERY</div><h2>Player builds &amp; server</h2></div>
+<div class="gg" id="galleryGrid"></div>
+</div>
+</section>
 </div>
 
-<!-- ============ PLAYERS PAGE ============ -->
-<div class="page" id="page-players">
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">PLAYER PROFILES</div>
-        <h2>Player Directory</h2>
-        <p>Search for players, view their stats, rank, and playtime. Data updates live from the server.</p>
-      </div>
-
-      <!-- Search bar -->
-      <div class="faq-search" style="margin-bottom:32px;">
-        <input type="text" id="playerSearchInput" placeholder="Search by username..." oninput="filterPlayers()">
-      </div>
-
-      <!-- Player grid -->
-      <div id="playersGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:1000px;margin:0 auto;">
-        <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg-3);">
-          <div style="font-size:48px;margin-bottom:16px;">👥</div>
-          <p>Loading player data...</p>
-        </div>
-      </div>
-
-      <!-- No results -->
-      <div id="noPlayers" style="display:none;text-align:center;padding:48px;color:var(--fg-3);">
-        <div style="font-size:48px;margin-bottom:16px;">🔍</div>
-        <p>No players found. Try a different search.</p>
-      </div>
-    </div>
-  </section>
+<!-- FAQ -->
+<div class="page" id="p-faq">
+<section class="sec" style="padding-top:120px;background:var(--bg2)">
+<div class="ctn">
+<div class="sh"><div class="st">FAQ</div><h2>Frequently asked questions</h2></div>
+<div class="fsearch"><input type="text" placeholder="Search questions..." oninput="filterFAQ()"></div>
+<div class="faql" id="faqList"></div>
+</div>
+</section>
 </div>
 
-<!-- ============ CHANGELOG PAGE ============ -->
-<div class="page" id="page-changelog">
-  <section class="section" style="padding-top:120px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">CHANGELOG</div>
-        <h2>Server updates.</h2>
-        <p>Stay up to date with the latest changes and improvements.</p>
-      </div>
-      <div class="changelog-list" id="changelogList"></div>
-    </div>
-  </section>
+<!-- CHANGELOG -->
+<div class="page" id="p-changelog">
+<section class="sec" style="padding-top:120px">
+<div class="ctn">
+<div class="sh"><div class="st">CHANGELOG</div><h2>Server updates</h2></div>
+<div class="cl" id="changelogList"></div>
+</div>
+</section>
 </div>
 
 <!-- FOOTER -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo"><div class="logo-icon">🌱</div><span>Lion<span>MC</span></span></div>
-        <p>Lion MC â A community-driven Survival SMP server. No pay-to-win, just pure survival.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Server</h4>
-        <a onclick="navigate('features')">Features</a>
-        <a onclick="navigate('rules')">Rules</a>
-        <a onclick="navigate('faq')">FAQ</a>
-        <a onclick="navigate('changelog')">Changelog</a>
-      </div>
-      <div class="footer-col">
-        <h4>Community</h4>
-        <a href="https://discord.gg/VXy4pRqEQN" target="_blank">Discord</a>
-        <a>Vote</a>
-        <a onclick="navigate('dynmap')">Map</a>
-        <a onclick="navigate('players')">Players</a>
-        <a onclick="navigate('store')">Store</a>
-        <a onclick="navigate('staff')">Staff</a>
-        <a onclick="navigate('gallery')">Gallery</a>
-      </div>
-      <div class="footer-col">
-        <h4>Server IP</h4>
-        <a style="font-family:var(--font-mono); color:var(--emerald); cursor:pointer;" onclick="copyIP()">node1.hostingkarle.com:25565</a>
-        <a style="color:var(--fg-3); font-size:12px;">Click to copy</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div>© 2026 Lion MC. Not affiliated with Mojang or Microsoft.</div>
-      <div>Minecraft is a trademark of Mojang Studios.</div>
-    </div>
-  </div>
+<footer class="ft">
+<div class="ctn">
+<div class="fg2">
+<div class="fb">
+<div class="logo"><div class="li">&#129409;</div>Lion<b>MC</b></div>
+<p>A community-driven Survival SMP server. No pay-to-win, just pure survival.</p>
+</div>
+<div class="fc2"><h4>Server</h4><a onclick="nav('features')">Features</a><a onclick="nav('rules')">Rules</a><a onclick="nav('faq')">FAQ</a><a onclick="nav('changelog')">Updates</a></div>
+<div class="fc2"><h4>Community</h4><a href="https://discord.gg/VXy4pRqEQN" target="_blank">Discord</a><a onclick="nav('store')">Store</a><a onclick="nav('staff')">Staff</a><a onclick="nav('gallery')">Gallery</a></div>
+<div class="fc2"><h4>Server IP</h4><a style="font-family:var(--fm);color:var(--em);cursor:pointer" onclick="copyIP()">node1.hostingkarle.com</a><a style="color:var(--fg3);font-size:12px">Click to copy</a></div>
+</div>
+<div class="fb2"><div>&copy; 2026 Lion MC. Not affiliated with Mojang or Microsoft.</div><div>Minecraft is a trademark of Mojang Studios.</div></div>
+</div>
 </footer>
 
 <script>
-// ============ NAVIGATION ============
-function navigate(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.page === page));
-  document.getElementById('navLinks').classList.remove('open');
-  window.scrollTo(0, 0);
-  history.replaceState(null, '', '#' + page);
-  if (page === 'dynmap') setTimeout(loadDynmap, 100);
-  if (page === 'players') setTimeout(loadPlayers, 100);
+// NAV
+function nav(page){
+document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+var el=document.getElementById('p-'+page);
+if(el)el.classList.add('active');
+document.querySelectorAll('.nl a').forEach(function(a){a.classList.toggle('active',a.dataset.p===page)});
+document.getElementById('nl').classList.remove('open');
+window.scrollTo(0,0);
+history.replaceState(null,'','#'+page);
+if(page==='dynmap')setTimeout(loadDynmap,100);
+if(page==='players')setTimeout(loadPlayers,100);
+}
+window.addEventListener('popstate',function(){var p=location.hash.substring(1)||'home';nav(p)});
+window.addEventListener('load',function(){var p=location.hash.substring(1)||'home';nav(p)});
+
+// SCROLL
+window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('scrolled',window.scrollY>20)});
+
+// THEME
+function toggleTheme(){
+var h=document.documentElement;
+if(h.getAttribute('data-theme')==='light'){h.removeAttribute('data-theme');localStorage.setItem('theme','dark')}
+else{h.setAttribute('data-theme','light');localStorage.setItem('theme','light')}
+}
+if(localStorage.getItem('theme')==='light'){document.documentElement.setAttribute('data-theme','light')}
+
+// COPY IP
+function copyIP(){
+var ip='node1.hostingkarle.com:25565';
+navigator.clipboard.writeText(ip).then(function(){
+var b=document.getElementById('cb');
+if(b){b.textContent='Copied!';b.classList.add('cop');setTimeout(function(){b.textContent='Copy';b.classList.remove('cop')},2000)}
+})
 }
 
-// Handle back/forward
-window.addEventListener('popstate', () => {
-  const page = location.hash.substring(1) || 'home';
-  navigate(page);
-});
-
-// Load page from URL hash
-window.addEventListener('load', () => {
-  const page = location.hash.substring(1) || 'home';
-  navigate(page);
-});
-
-function scrollToJoin() { document.getElementById('join')?.scrollIntoView({ behavior: 'smooth' }); }
-
-// ============ NAV SCROLL ============
-window.addEventListener('scroll', () => {
-  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
-});
-
-// ============ THEME TOGGLE ============
-function toggleTheme() {
-  const html = document.documentElement;
-  const current = html.getAttribute('data-theme');
-  const next = current === 'light' ? 'dark' : 'light';
-  if (next === 'dark') { html.removeAttribute('data-theme'); }
-  else { html.setAttribute('data-theme', 'light'); }
-  document.getElementById('themeToggle').textContent = next === 'light' ? '☀️' : '🌙';
-  localStorage.setItem('theme', next);
+// SERVER STATUS
+function checkStatus(){
+var sd=document.getElementById('sd'),stxt=document.getElementById('stxt'),hpo=document.getElementById('hpo'),hpm=document.getElementById('hpm');
+fetch('https://api.mcsrvstat.us/3/node1.hostingkarle.com:25565').then(function(r){return r.json()}).then(function(d){
+if(d.online){
+stxt.textContent='Online \u00B7 '+d.players.online+'/'+d.players.max+' players';
+sd.classList.remove('off');
+if(hpo)hpo.textContent=d.players.online;
+if(hpm)hpm.textContent=d.players.max;
+}else{
+stxt.textContent='Server is offline';
+sd.classList.add('off');
+if(hpo)hpo.textContent='0';
+if(hpm)hpm.textContent='--';
 }
-window.addEventListener('load', () => {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light') { document.documentElement.setAttribute('data-theme', 'light'); document.getElementById('themeToggle').textContent = '☀️'; }
+}).catch(function(){
+stxt.textContent='Unable to check status';
+sd.classList.add('off');
 });
-
-// ============ COPY IP ============
-function copyIP() {
-  navigator.clipboard.writeText('node1.hostingkarle.com:25565').then(() => {
-    const btn = document.getElementById('copyBtn');
-    if (btn) { btn.textContent = 'Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000); }
-  });
 }
+checkStatus();setInterval(checkStatus,60000);
 
-// ============ SERVER STATUS ============
-async function checkServerStatus() {
-  const statusText = document.getElementById('statusText');
-  const statusDot = document.getElementById('statusDot');
-  const statPlayers = document.getElementById('statPlayers');
-  const statMax = document.getElementById('statMax');
-
-  try {
-    // Try mcsrvstat.us API
-    const res = await fetch('https://api.mcsrvstat.us/3/node1.hostingkarle.com:25565');
-    const data = await res.json();
-
-    if (data.online) {
-      statusText.textContent = `Online · ${data.players.online}/${data.players.max} players`;
-      statusDot.classList.remove('offline');
-      if (statPlayers) statPlayers.textContent = data.players.online;
-      if (statMax) statMax.textContent = data.players.max;
-    } else {
-      statusText.textContent = 'Server is offline';
-      statusDot.classList.add('offline');
-      if (statPlayers) statPlayers.textContent = '0';
-      if (statMax) statMax.textContent = '—';
-    }
-  } catch (e) {
-    statusText.textContent = 'Unable to check status';
-    statusDot.classList.add('offline');
-    if (statPlayers) statPlayers.textContent = '?';
-    if (statMax) statMax.textContent = '?';
-  }
-}
-checkServerStatus();
-setInterval(checkServerStatus, 60000); // refresh every 60s
-
-// ============ DATA ============
-const FEATURES = [
-  { icon:'🏠', color:'#2ecc71', title:'Land Claiming', desc:'Protect your builds with golden shovel claiming. No griefers, no raiding.' },
-  { icon:'⚔️', color:'#e74c3c', title:'Survival Focus', desc:'Pure vanilla survival. No overloaded plugins, just clean gameplay.' },
-  { icon:'🛡️', color:'#3498db', title:'Anti-Cheat', desc:'Active staff + automated detection. Hackers and dupers banned fast.' },
-  { icon:'💎', color:'#9b59b6', title:'Player Economy', desc:'Trade with other players. Set up shops, buy, sell, thrive.' },
-  { icon:'🌍', color:'#f1c40f', title:'Large World', desc:'Massive pre-generated world with plenty of unexplored land to claim.' },
-  { icon:'🤝', color:'#e67e22', title:'Friendly Community', desc:'Active Discord, helpful staff, and regular events with rewards.' },
-  { icon:'🔧', color:'#1abc9c', title:'Quality Plugins', desc:'Homes, RTP, TPA, economy, and more — without ruining vanilla feel.' },
-  { icon:'⏰', color:'#e91e63', title:'24/7 Uptime', desc:'Dedicated hosting with 99.9% uptime. Your builds are always safe.' },
-  { icon:'🎁', color:'#00bcd4', title:'Voting Rewards', desc:'Vote for the server on listing sites and earn in-game rewards.' },
-  { icon:'🏗️', color:'#ff9800', title:'No World Resets', desc:'The world is permanent. Only the End resets for fresh elytra.' },
-  { icon:'📊', color:'#4caf50', title:'Player Stats', desc:'Track your playtime, blocks placed, mobs killed, and more.' },
-  { icon:'🎨', color:'#9c27b0', title:'Custom Textures', desc:'Custom resource pack adds unique items like the Magma Armor set.' },
+// DATA
+var FEATURES=[
+{icon:'\uD83C\uDFE0',c:'#2ecc71',t:'Land Claiming',d:'Protect your builds with golden shovel claiming. No griefers.'},
+{icon:'\u2694\uFE0F',c:'#e74c3c',t:'Survival Focus',d:'Pure vanilla survival. No overloaded plugins, just clean gameplay.'},
+{icon:'\uD83D\uDEE1\uFE0F',c:'#3498db',t:'Anti-Cheat',d:'Active staff + automated detection. Hackers banned fast.'},
+{icon:'\uD83D\uDC8E',c:'#9b59b6',t:'Player Economy',d:'Trade with other players. Set up shops, buy, sell, thrive.'},
+{icon:'\uD83C\uDF0D',c:'#f1c40f',t:'Large World',d:'Massive pre-generated world with unexplored land to claim.'},
+{icon:'\uD83E\uDD1D',c:'#e67e22',t:'Friendly Community',d:'Active Discord, helpful staff, and regular events.'},
+{icon:'\uD83D\uDD27',c:'#1abc9c',t:'Quality Plugins',d:'Homes, RTP, TPA, economy, and more \u2014 vanilla-friendly.'},
+{icon:'\u23F0',c:'#e91e63',t:'24/7 Uptime',d:'Dedicated hosting with 99.9% uptime. Your builds are safe.'},
+{icon:'\uD83C\uDF81',c:'#00bcd4',t:'Voting Rewards',d:'Vote for the server and earn in-game rewards.'},
+{icon:'\uD83C\uDFD7\uFE0F',c:'#ff9800',t:'No World Resets',d:'The world is permanent. Only the End resets for fresh elytra.'},
+{icon:'\uD83D\uDCCA',c:'#4caf50',t:'Player Stats',d:'Track playtime, blocks placed, mobs killed, and more.'},
+{icon:'\uD83C\uDFA8',c:'#9c27b0',t:'Custom Textures',d:'Custom resource pack adds unique items like Magma Armor.'}
 ];
-
-const PLUGINS = [
-  { icon:'🔒', color:'#2ecc71', title:'GhostAdmin', desc:'Advanced admin panel with jail system, freeze, vanish, cheater detection, and 24+ commands.' },
-  { icon:'🔥', color:'#e67e22', title:'MagmaItems', desc:'Custom magma armor set + sword with crafting recipes, set bonuses, and custom textures.' },
-  { icon:'🎵', color:'#9b59b6', title:'CustomMusic', desc:'Custom music plugin that plays songs via resource pack. Players can toggle music on/off.' },
-  { icon:'🏠', color:'#3498db', title:'GriefPrevention', desc:'Land claiming system. Protect your builds from griefers with golden shovel.' },
+var PLUGINS=[
+{icon:'\uD83D\uDD12',c:'#2ecc71',t:'GhostAdmin',d:'Admin panel with jail, freeze, vanish, cheater detection, 24+ commands.'},
+{icon:'\uD83D\uDD25',c:'#e67e22',t:'MagmaItems',d:'Custom magma armor + sword with crafting recipes and set bonuses.'},
+{icon:'\uD83C\uDFB5',c:'#9b59b6',t:'CustomMusic',d:'Custom music plugin via resource pack. Toggle on/off.'},
+{icon:'\uD83C\uDFE0',c:'#3498db',t:'GriefPrevention',d:'Land claiming. Protect builds from griefers with golden shovel.'}
 ];
-
-const STAFF = [
-  { name:'OnyixMC', role:'Owner', skin:'OnyixMC', color:'#f1c40f' },
-  { name:'stefan232', role:'Owner', skin:'stefan232', color:'#f1c40f' },
-  { name:'InfernosteveYT', role:'Manager', skin:'InfernosteveYT', color:'#e67e22' },
-  { name:'Anri007', role:'Developer', skin:'Anri007', color:'#9b59b6' },
-  { name:'Staff Slot', role:'Moderator', emoji:'⚖️', color:'#3498db' },
-  { name:'Staff Slot', role:'Moderator', emoji:'⚖️', color:'#3498db' },
-]
-
-const RULES = {
-  '🎮 Gameplay': [
-    'No griefing or raiding claimed land.',
-    'No hacking, x-ray, or unfair mods.',
-    'No exploiting bugs or duping items.',
-    'No alt accounts for ban evasion.',
-    'PvP only in designated arenas or with mutual consent.',
-  ],
-  '💬 Chat': [
-    'No spamming, advertising, or NSFW content.',
-    'Be respectful — no slurs, harassment, or bullying.',
-    'Keep chat in English (main chat).',
-    'No political or religious debates.',
-    'No sharing personal info about other players.',
-  ],
-  '🏗️ Building': [
-    'No builds within 100 blocks of another player\'s claim without permission.',
-    'No offensive or inappropriate builds.',
-    'No lag machines or redstone contraptions that hurt server TPS.',
-    'Keep the spawn area clean — no 1x1 towers or random holes.',
-    'Report abandoned builds to staff for removal.',
-  ],
+var STAFF=[
+{name:'OnyixMC',role:'Owner',skin:'OnyixMC',color:'#f1c40f'},
+{name:'stefan232',role:'Owner',skin:'stefan232',color:'#f1c40f'},
+{name:'InfernosteveYT',role:'Manager',skin:'InfernosteveYT',color:'#e67e22'},
+{name:'Anri007',role:'Developer',skin:'Anri007',color:'#9b59b6'},
+{name:'Staff Slot',role:'Moderator',emoji:'\u2696\uFE0F',color:'#3498db'},
+{name:'Staff Slot',role:'Moderator',emoji:'\u2696\uFE0F',color:'#3498db'}
+];
+var RULES={
+'\uD83C\uDFAE Gameplay':['No griefing or raiding claimed land.','No hacking, x-ray, or unfair mods.','No exploiting bugs or duping items.','No alt accounts for ban evasion.','PvP only in arenas or with mutual consent.'],
+'\uD83D\uDCAC Chat':['No spamming, advertising, or NSFW.','Be respectful \u2014 no slurs or harassment.','Keep chat in English.','No political or religious debates.','No sharing personal info.'],
+'\uD83C\uDFD7\uFE0F Building':['No builds within 100 blocks of others without permission.','No offensive or inappropriate builds.','No lag machines or TPS-killing contraptions.','Keep spawn area clean.','Report abandoned builds for removal.']
 };
-
-const FAQS = [
-  { q:'What version is the server?', a:'We run Minecraft Java Edition 1.21.4. You can join with any 1.21.x version.' },
-  { q:'Can I play on Bedrock (mobile/console)?', a:'Bedrock support may be available via Geyser. Check our Discord for the Bedrock port.' },
-  { q:'Is there a store or pay-to-win?', a:'No. Lion MC is completely free. No store, no pay-to-win. Everyone plays equally.' },
-  { q:'How do I claim land?', a:'Use a golden shovel to claim. Right-click two corners to define your claim. Type /claim in-game for help.' },
-  { q:'What plugins does the server use?', a:'EssentialsX, GriefPrevention, CoreProtect, economy, custom GhostAdmin + MagmaItems plugins, and QoL plugins.' },
-  { q:'How do I report a player or bug?', a:'Join our Discord and use #report. For urgent issues, ping staff. Screenshots help!' },
-  { q:'Is the world reset often?', a:'No. The world is permanent. Only the End dimension resets periodically for fresh elytra.' },
-  { q:'How do I vote for rewards?', a:'Use /vote in-game to get voting links. Each vote gives you rewards like diamonds, XP, and crate keys.' },
-  { q:'How do I become staff?', a:'Apply through our Discord server. We look for active, helpful players who know the rules.' },
-  { q:'What are the custom items?', a:'We have the Magma Armor set and Magma Blade sword — craftable items with unique textures and set bonuses.' },
+var FAQS=[
+{q:'What version is the server?',a:'We run Minecraft Java Edition 1.21.4. You can join with any 1.21.x version.'},
+{q:'Can I play on Bedrock?',a:'Bedrock support may be available via Geyser. Check our Discord for the Bedrock port.'},
+{q:'Is there a store or pay-to-win?',a:'No. Lion MC is completely free. The store is cosmetic only \u2014 no gameplay advantages.'},
+{q:'How do I claim land?',a:'Use a golden shovel to claim. Right-click two corners. Type /claim in-game for help.'},
+{q:'What plugins does the server use?',a:'EssentialsX, GriefPrevention, CoreProtect, economy, custom GhostAdmin + MagmaItems, and QoL plugins.'},
+{q:'How do I report a player?',a:'Join our Discord and use #report. For urgent issues, ping staff.'},
+{q:'Is the world reset often?',a:'No. The world is permanent. Only the End resets for fresh elytra.'},
+{q:'How do I vote for rewards?',a:'Use /vote in-game to get voting links. Each vote gives rewards.'},
+{q:'How do I become staff?',a:'Apply through our Discord. We look for active, helpful players.'},
+{q:'What are the custom items?',a:'We have the Magma Armor set and Magma Blade \u2014 craftable items with unique textures and bonuses.'}
+];
+var CHANGELOG=[
+{v:'v2.1.0',d:'2026-06-20',items:[{type:'add',t:'Added MagmaItems plugin'},{type:'add',t:'Added CustomMusic plugin'},{type:'add',t:'Voting rewards system'}]},
+{v:'v2.0.0',d:'2026-06-19',items:[{type:'add',t:'GhostAdmin plugin with jail system'},{type:'add',t:'24+ admin commands'},{type:'add',t:'Cheater detection with X-Ray traps'},{type:'fix',t:'Fixed server stability'}]},
+{v:'v1.0.0',d:'2026-06-15',items:[{type:'add',t:'Server launched!'},{type:'add',t:'Land claiming enabled'},{type:'add',t:'Economy system setup'},{type:'add',t:'Custom spawn built'}]}
+];
+var RANKS=[
+{icon:'\u2B50',tier:'Basic',name:'VIP',price:'\u00A33.99',old:'\u00A35.99',color:'#3498db',bg:'rgba(52,152,219,.06)',features:['Blue chat color','/hat command','5 home slots','VIP prefix','Weekly /kit vip',{no:'No particle effects'}]},
+{icon:'\u2728',tier:'Popular',name:'VIP+',price:'\u00A36.99',old:'\u00A39.99',color:'#e67e22',bg:'rgba(230,126,34,.06)',best:true,features:['Orange chat color','/hat + /nick + /particle','10 home slots','VIP+ prefix','2 Common crate keys','Custom join message']},
+{icon:'\u2744\uFE0F',tier:'Premium',name:'Ice',price:'\u00A39.99',old:'\u00A314.99',color:'#00bcd4',bg:'rgba(0,188,212,.06)',features:['Cyan chat color','/hat + /nick + /particle','15 home slots','Ice prefix','3 Rare crate keys','Ice particle trail']},
+{icon:'\uD83E\uDD81',tier:'Ultimate',name:'Lion',price:'\u00A314.99',old:'\u00A324.99',color:'#f1c40f',bg:'rgba(241,196,15,.06)',features:['Gold chat color','All cosmetic commands','20 home slots','Lion prefix','5 Mythic crate keys','Custom wing particles','Animated prefix','Priority support']}
+];
+var CRATES=[
+{icon:'\uD83D\uDCE6',name:'Voter Crate',desc:'Free with /vote. Cosmetics, tags, QoL items.',price:'FREE',free:true,color:'#2ecc71'},
+{icon:'\uD83C\uDF81',name:'Common Crate',desc:'Name colors, trails, chat tags.',price:'\u00A31.49',color:'#e67e22'},
+{icon:'\uD83D\uDC9C',name:'Rare Crate',desc:'Rare particles, glow, join messages.',price:'\u00A32.99',color:'#9b59b6'},
+{icon:'\uD83D\uDD25',name:'Mythic Crate',desc:'Wings, death messages, unique prefix.',price:'\u00A34.99',color:'#e74c3c'},
+{icon:'\u2B50',name:'Legendary Crate',desc:'Exclusive cosmetics, animated tags, aurora.',price:'\u00A37.99',color:'#f1c40f'}
+];
+var COSMETICS=[
+{icon:'\uD83D\uDD8B\uFE0F',name:'Nickname Color',price:'\u00A30.99'},
+{icon:'\u2728',name:'Particle Trail',price:'\u00A31.49'},
+{icon:'\uD83D\uDCAC',name:'Chat Tag',price:'\u00A30.99'},
+{icon:'\uD83D\uDE80',name:'Custom Join Msg',price:'\u00A31.99'},
+{icon:'\uD83D\uDC1D',name:'Death Message',price:'\u00A31.99'},
+{icon:'\uD83D\uDC8D',name:'Glow Effect',price:'\u00A32.49'},
+{icon:'\uD83E\uDEB6',name:'Wing Particles',price:'\u00A33.99'},
+{icon:'\uD83C\uDF0A',name:'Aura Effect',price:'\u00A33.99'}
+];
+var GALLERY=[
+{label:'Spawn Area',img:'spawn.png'},
+{label:'Player Build',ph:true},
+{label:'Community Town',ph:true},
+{label:'Mining Base',ph:true},
+{label:'Survival Base',ph:true},
+{label:'Event Arena',ph:true}
 ];
 
-const CHANGELOG = [
-  { version:'v2.1.0', date:'2026-06-20', items:[
-    {type:'add', text:'Added MagmaItems plugin with custom armor + sword'},
-    {type:'add', text:'Added CustomMusic plugin'},
-    {type:'add', text:'Voting rewards system'},
-  ]},
-  { version:'v2.0.0', date:'2026-06-19', items:[
-    {type:'add', text:'GhostAdmin plugin with jail system, freeze, vanish'},
-    {type:'add', text:'24+ admin commands'},
-    {type:'add', text:'Cheater detection with X-Ray traps'},
-    {type:'fix', text:'Fixed server stability issues'},
-  ]},
-  { version:'v1.0.0', date:'2026-06-15', items:[
-    {type:'add', text:'Server launched!'},
-    {type:'add', text:'Land claiming enabled'},
-    {type:'add', text:'Economy system setup'},
-    {type:'add', text:'Custom spawn built'},
-  ]},
-];
+// RENDER
+document.getElementById('homeFeatures').innerHTML=FEATURES.slice(0,6).map(function(f){return'<div class="fc" style="--c:'+f.c+'" onclick="nav(\'features\')" ><div class="fi">'+f.icon+'</div><h3>'+f.t+'</h3><p>'+f.d+'</p></div>'}).join('');
+document.getElementById('allFeatures').innerHTML=FEATURES.map(function(f){return'<div class="fc" style="--c:'+f.c+'"><div class="fi">'+f.icon+'</div><h3>'+f.t+'</h3><p>'+f.d+'</p></div>'}).join('');
+document.getElementById('customPlugins').innerHTML=PLUGINS.map(function(p){return'<div class="fc" style="--c:'+p.c+'"><div class="fi">'+p.icon+'</div><h3>'+p.t+'</h3><p>'+p.d+'</p></div>'}).join('');
 
-const GALLERY = [
-  { label:'Spawn Area', img:'spawn.png' },
-  { label:'Player Build', grad:'linear-gradient(135deg,#1a1a2a,#0a0a1a)' },
-  { label:'Community Town', grad:'linear-gradient(135deg,#2a1a1a,#1a0a0a)' },
-  { label:'Mining Base', grad:'linear-gradient(135deg,#2a2a1a,#1a1a0a)' },
-  { label:'Survival Base', grad:'linear-gradient(135deg,#1a2a2a,#0a1a1a)' },
-  { label:'Event Arena', grad:'linear-gradient(135deg,#2a1a2a,#1a0a1a)' },
-];
-
-// ============ RENDER ============
-document.getElementById('homeFeatures').innerHTML = FEATURES.slice(0, 6).map(f => `
-  <div class="feature-card" style="--fc:${f.color}" onclick="navigate('features')" style="cursor:pointer">
-    <div class="feature-icon">${f.icon}</div>
-    <h3>${f.title}</h3>
-    <p>${f.desc}</p>
-  </div>`).join('');
-
-document.getElementById('allFeatures').innerHTML = FEATURES.map(f => `
-  <div class="feature-card" style="--fc:${f.color}">
-    <div class="feature-icon">${f.icon}</div>
-    <h3>${f.title}</h3>
-    <p>${f.desc}</p>
-  </div>`).join('');
-
-document.getElementById('customPlugins').innerHTML = PLUGINS.map(p => `
-  <div class="feature-card" style="--fc:${p.color}">
-    <div class="feature-icon">${p.icon}</div>
-    <h3>${p.title}</h3>
-    <p>${p.desc}</p>
-  </div>`).join('');
-
-document.getElementById('rulesGrid').innerHTML = Object.entries(RULES).map(([category, rules]) => `
-  <div class="rule-category">
-    <h3>${category}</h3>
-    <ul class="rule-list">
-      ${rules.map(r => `<li>${r}</li>`).join('')}
-    </ul>
-  </div>`).join('');
-
-document.getElementById('staffGrid').innerHTML = STAFF.map(s => {
-  const avatar = s.skin
-    ? '<div style="width:64px;height:64px;margin:0 auto 12px;border-radius:12px;overflow:hidden;border:2px solid ' + s.color + ';background:#161b24;"><img src="https://minotar.net/avatar/' + s.skin + '/64" style="width:64px;height:64px;display:block;" loading="lazy" onerror='this.parentElement.style.display="none"'></div>'
-    : '<div class="staff-avatar" style="background:' + s.color + '20; border:2px solid ' + s.color + ';margin:0 auto 12px;">' + s.emoji + '</div>';
-  return '<div class="staff-card">' + avatar +
-    '<div class="staff-name">' + s.name + '</div>' +
-    '<div class="staff-role" style="color:' + s.color + ';">' + s.role + '</div>' +
-    '</div>';
+document.getElementById('staffGrid').innerHTML=STAFF.map(function(s){
+var avatar=s.skin?'<div class="sa" style="--c:'+s.color+'"><img src="https://minotar.net/avatar/'+s.skin+'/64" loading="lazy"></div>':'<div class="sa" style="--c:'+s.color+'"><div class="sph">'+(s.emoji||'')+'</div></div>';
+return'<div class="sc" style="--c:'+s.color+'">'+avatar+'<div class="sname">'+s.name+'</div><div class="srole">'+s.role+'</div></div>';
 }).join('');
 
-document.getElementById('galleryGrid').innerHTML = GALLERY.map(g => {
-  const hasImg = g.img !== undefined;
-  return `<div class="gallery-item ${hasImg ? '' : 'gallery-placeholder'}" ${hasImg ? '' : 'style="background:'+g.grad+'"'}>
-    ${hasImg ? '<img src="'+g.img+'" alt="'+g.label+'" style="width:100%;height:100%;object-fit:cover;">' : '<div>'+g.label+'</div>'}
-    <div class="gallery-label">${g.label}</div>
-  </div>`;
+document.getElementById('rulesGrid').innerHTML=Object.keys(RULES).map(function(cat){
+return'<div class="rc"><h3>'+cat+'</h3><ul class="rl">'+RULES[cat].map(function(r){return'<li>'+r+'</li>'}).join('')+'</ul></div>';
 }).join('');
 
-document.getElementById('faqList').innerHTML = FAQS.map((f, i) => `
-  <div class="faq-item" data-idx="${i}" data-search="${(f.q + ' ' + f.a).toLowerCase()}">
-    <button class="faq-q">
-      <span>${f.q}</span>
-      <span class="faq-toggle">✕</span>
-    </button>
-    <div class="faq-a"><div class="faq-a-inner">${f.a}</div></div>
-  </div>`).join('');
+document.getElementById('galleryGrid').innerHTML=GALLERY.map(function(g){
+if(g.img)return'<div class="gi"><img src="'+g.img+'" alt="'+g.label+'"><div class="gl">'+g.label+'</div></div>';
+return'<div class="gi"><div class="gp">'+g.label+'</div><div class="gl">'+g.label+'</div></div>';
+}).join('');
 
-document.querySelectorAll('.faq-item').forEach(item => {
-  item.querySelector('.faq-q').addEventListener('click', () => item.classList.toggle('open'));
+document.getElementById('faqList').innerHTML=FAQS.map(function(f,i){
+return'<div class="faqi" data-search="'+(f.q+' '+f.a).toLowerCase()+'"><button class="faq" onclick="this.parentElement.classList.toggle(\'open\')"><span>'+f.q+'</span><span class="ft">+</span></button><div class="faqas"><div class="faqai">'+f.a+'</div></div></div>';
+}).join('');
+
+document.getElementById('changelogList').innerHTML=CHANGELOG.map(function(c){
+return'<div class="ci"><span class="cv">'+c.v+'</span><div class="cd">'+c.d+'</div><ul>'+c.items.map(function(i){return'<li class="'+(i.type==='fix'?'fix':'')+'">'+i.t+'</li>'}).join('')+'</ul></div>';
+}).join('');
+
+// STORE
+document.getElementById('storeRanks').innerHTML=RANKS.map(function(r){
+var featHTML=r.features.map(function(f){
+if(typeof f==='object'&&f.no)return'<li class="no">'+f.no+'</li>';
+return'<li>'+f+'</li>';
+}).join('');
+return'<div class="rkc'+(r.best?' best':'')+'" style="--rc:'+r.color+';--rb:'+r.bg+'">'+
+(r.best?'<div class="rbt">\u2B50 Best Value</div>':'')+
+'<div class="rkh" style="'+(r.best?'padding-top:40px':'')+'"><div class="rki">'+r.icon+'</div><div class="rkt">'+r.tier+'</div><div class="rkn">'+r.name+'</div><div class="rkp">'+r.price+'</div><div class="rkp2">'+r.old+'</div></div>'+
+'<ul class="rkf">'+featHTML+'</ul>'+
+'<a href="https://discord.gg/VXy4pRqEQN" target="_blank" class="rkb'+(r.best?'':' gh')+'">Choose '+r.name+'</a></div>';
+}).join('');
+
+document.getElementById('storeCrates').innerHTML=CRATES.map(function(c){
+return'<div class="crc" style="--cc:'+c.color+'"><div class="cri">'+c.icon+'</div><div class="crn">'+c.name+'</div><div class="crd">'+c.desc+'</div><div class="crp'+(c.free?' free':'')+'">'+c.price+'</div><a href="https://discord.gg/VXy4pRqEQN" target="_blank" class="rkb gh" style="--rc:'+c.color+'">Buy Key</a></div>';
+}).join('');
+
+document.getElementById('storeCosmetics').innerHTML=COSMETICS.map(function(c){
+return'<div class="cmc"><div class="cmci">'+c.icon+'</div><div class="cmcn">'+c.name+'</div><div class="cmcp">'+c.price+'</div></div>';
+}).join('');
+
+// DYNMAP
+function loadDynmap(){
+var frame=document.getElementById('dynmapFrame');
+if(!frame)return;
+frame.innerHTML='<iframe src="http://node1.hostingkarle.com:25571/" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>';
+}
+
+// PLAYERS
+function loadPlayers(){
+var grid=document.getElementById('playersGrid');
+if(!grid)return;
+grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg3)"><p>Loading players...</p></div>';
+fetch('https://api.mcsrvstat.us/3/node1.hostingkarle.com:25565').then(function(r){return r.json()}).then(function(d){
+if(d.online&&d.players){
+if(d.players.list&&d.players.list.length>0){
+grid.innerHTML=d.players.list.map(function(p){
+var name=p.name||'Unknown';
+return'<div class="pcard" data-name="'+name.toLowerCase()+'"><div class="pavatar"><img src="https://minotar.net/avatar/'+(p.uuid||name)+'/48" loading="lazy"></div><div><div class="pname">'+name+'</div><div class="pstatus">Online</div></div></div>';
+}).join('');
+}else if(d.players.online>0){
+grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg3)"><p>'+d.players.online+' players online (names hidden)</p></div>';
+}else{
+grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg3)"><p>No players online right now.</p></div>';
+}
+}else{
+grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg3)"><p>Server is offline.</p></div>';
+}
+}).catch(function(){
+grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg3)"><p>Could not load player data.</p></div>';
 });
-
-function filterFAQ() {
-  const q = document.getElementById('faqSearchInput').value.toLowerCase();
-  document.querySelectorAll('.faq-item').forEach(item => {
-    const match = item.dataset.search.includes(q);
-    item.style.display = match ? '' : 'none';
-  });
 }
 
-
-// ============ DYNMAP ============
-function loadDynmap() {
-  const container = document.getElementById('dynmapContainer');
-  if (!container) return;
-
-  // Try to load the Dynmap iframe
-  // The Dynmap URL would be http://SERVER_IP:8123
-  const dynmapUrl = 'http://node1.hostingkarle.com:25571/';
-
-  // Create iframe
-  const iframe = document.createElement('iframe');
-  iframe.style.width = '100%';
-  iframe.style.height = '100%';
-  iframe.style.border = 'none';
-  iframe.src = dynmapUrl;
-  iframe.onload = function() {
-    container.innerHTML = '';
-    container.appendChild(iframe);
-    container.style.padding = '0';
-  };
-  iframe.onerror = function() {
-    container.innerHTML = '<div><div style="font-size:48px;margin-bottom:16px;">🗺️</div><p>Dynmap is not available.</p><p style="font-size:12px;margin-top:8px;">Install Dynmap plugin and port forward 8123.</p></div>';
-  };
-
-  // Set a timeout - if the iframe doesn't load in 5 seconds, show the setup message
-  setTimeout(function() {
-    if (container.querySelector('iframe') === null || container.querySelector('iframe') !== iframe) {
-      // Try to append the iframe anyway
-      container.innerHTML = '<div style="width:100%;height:100%;display:grid;place-items:center;"><div style="text-align:center;"><div style="font-size:48px;margin-bottom:16px;">🗺️</div><p>Waiting for Dynmap...</p><p style="font-size:12px;margin-top:8px;color:var(--fg-3);">If the map doesn't load, Dynmap isn't installed yet.<br>See instructions below.</p></div></div>';
-    }
-  }, 5000);
-
-  // Actually try to embed it
-  container.innerHTML = '';
-  container.appendChild(iframe);
-  container.style.padding = '0';
+function filterPlayers(){
+var q=document.querySelector('#p-players .fsearch input').value.toLowerCase();
+document.querySelectorAll('.pcard').forEach(function(c){
+c.style.display=c.dataset.name.indexOf(q)>=0?'':'none';
+});
 }
 
-// ============ PLAYER PROFILES ============
-let allPlayers = [];
-let onlinePlayers = [];
-
-async function loadPlayers() {
-  const grid = document.getElementById('playersGrid');
-  if (!grid) return;
-  try {
-    const res = await fetch('https://api.mcsrvstat.us/3/node1.hostingkarle.com:25565');
-    const data = await res.json();
-    if (data.online && data.players && data.players.list && data.players.list.length > 0) {
-      onlinePlayers = data.players.list;
-    } else if (data.online && data.players && data.players.online > 0) {
-      onlinePlayers = [];
-      for (let i = 0; i < Math.min(data.players.online, 20); i++) {
-        onlinePlayers.push({name: 'Player ' + (i+1), uuid: '', online: true});
-      }
-    } else {
-      onlinePlayers = [];
-    }
-    if (onlinePlayers.length === 0) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg-3);"><p>No players online right now.</p></div>';
-      return;
-    }
-    grid.innerHTML = onlinePlayers.map(function(p) {
-      var name = p.name || 'Unknown';
-      var avatarUrl = 'https://minotar.net/avatar/' + (p.uuid || name) + '/64';
-      return '<div class="player-card" data-name="' + name.toLowerCase() + '" style="background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;gap:16px;align-items:center;">' +
-        '<div style="width:48px;height:48px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#161b24;"><img src="' + avatarUrl + '" style="width:48px;height:48px;display:block;" loading="lazy"></div>' +
-        '<div><div style="font-size:16px;font-weight:700;color:var(--fg);">' + name + '</div>' +
-        '<div style="font-size:12px;color:var(--emerald);margin-top:2px;">Online</div></div></div>';
-    }).join('');
-  } catch(e) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg-3);"><p>Could not load player data.</p></div>';
-  }
+function filterFAQ(){
+var q=document.querySelector('#p-faq .fsearch input').value.toLowerCase();
+document.querySelectorAll('.faqi').forEach(function(c){
+c.style.display=c.dataset.search.indexOf(q)>=0?'':'none';
+});
 }
-}
-
-function filterPlayers() {
-  const q = document.getElementById('playerSearchInput').value.toLowerCase();
-  const cards = document.querySelectorAll('.player-card');
-  let visible = 0;
-  cards.forEach(card => {
-    const match = card.dataset.name.includes(q);
-    card.style.display = match ? '' : 'none';
-    if (match) visible++;
-  });
-  document.getElementById('noPlayers').style.display = visible === 0 && cards.length > 0 ? 'block' : 'none';
-}
-
-
-document.getElementById('changelogList').innerHTML = CHANGELOG.map(c => `
-  <div class="changelog-item">
-    <div class="changelog-version">${c.version}</div>
-    <div class="changelog-date">${c.date}</div>
-    <ul>${c.items.map(i => `<li class="${i.type === 'fix' ? 'fix' : ''}">${i.text}</li>`).join('')}</ul>
-  </div>`).join('');
 </script>
-</body>
-</html>
+</body></html>
