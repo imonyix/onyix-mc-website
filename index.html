@@ -215,6 +215,8 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; colo
       <span class="nav-link" data-page="features" onclick="navigate('features')">Features</span>
       <span class="nav-link" data-page="rules" onclick="navigate('rules')">Rules</span>
       <span class="nav-link" data-page="staff" onclick="navigate('staff')">Staff</span>
+      <span class="nav-link" data-page="dynmap" onclick="navigate('dynmap')">Map</span>
+      <span class="nav-link" data-page="players" onclick="navigate('players')">Players</span>
       <span class="nav-link" data-page="store" onclick="navigate('store')">Store</span>
       <span class="nav-link" data-page="gallery" onclick="navigate('gallery')">Gallery</span>
       <span class="nav-link" data-page="faq" onclick="navigate('faq')">FAQ</span>
@@ -628,6 +630,75 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; colo
   </section>
 </div>
 
+
+<!-- ============ DYNMAP PAGE ============ -->
+<div class="page" id="page-dynmap">
+  <section class="section" style="padding-top:120px;">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">WORLD MAP</div>
+        <h2>Live Server Map</h2>
+        <p>Explore the Lion MC world in real-time. See player locations, claims, and terrain.</p>
+      </div>
+
+      <div style="max-width:1000px;margin:0 auto 24px;background:var(--glass);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <div id="dynmapContainer" style="width:100%;height:600px;display:grid;place-items:center;color:var(--fg-3);font-family:var(--font-mono);font-size:14px;text-align:center;padding:40px;">
+          <div>
+            <div style="font-size:48px;margin-bottom:16px;">🗺️</div>
+            <p>Map loading...</p>
+            <p style="font-size:12px;margin-top:8px;">If the map doesn't appear, Dynmap is not installed on the server yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="max-width:700px;margin:0 auto;padding:24px;background:var(--glass);border:1px solid var(--border);border-radius:14px;">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:12px;">📋 How to Enable the Live Map</h3>
+        <p style="color:var(--fg-2);font-size:14px;margin-bottom:12px;">The live map requires the Dynmap plugin installed on your Minecraft server. Here's how to set it up:</p>
+        <ol style="color:var(--fg-2);font-size:14px;padding-left:20px;line-height:1.8;">
+          <li>Download Dynmap from <a href="https://www.spigotmc.org/resources/dynmap.274/" target="_blank" style="color:var(--emerald);">SpigotMC</a></li>
+          <li>Put <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">Dynmap.jar</code> in your server's <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">plugins/</code> folder</li>
+          <li>Restart the server</li>
+          <li>Port forward <strong style="color:var(--emerald);">8123</strong> on your server (or ask your host to do it)</li>
+          <li>The map will be available at <code style="background:#000;padding:2px 6px;border-radius:4px;color:var(--emerald);">http://node1.hostingkarle.com:8123</code></li>
+        </ol>
+        <p style="color:var(--fg-3);font-size:12px;margin-top:12px;">Once Dynmap is running, this page will automatically show the live map. No website changes needed — just install the plugin.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ PLAYERS PAGE ============ -->
+<div class="page" id="page-players">
+  <section class="section" style="padding-top:120px;">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">PLAYER PROFILES</div>
+        <h2>Player Directory</h2>
+        <p>Search for players, view their stats, rank, and playtime. Data updates live from the server.</p>
+      </div>
+
+      <!-- Search bar -->
+      <div class="faq-search" style="margin-bottom:32px;">
+        <input type="text" id="playerSearchInput" placeholder="Search by username..." oninput="filterPlayers()">
+      </div>
+
+      <!-- Player grid -->
+      <div id="playersGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:1000px;margin:0 auto;">
+        <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg-3);">
+          <div style="font-size:48px;margin-bottom:16px;">👥</div>
+          <p>Loading player data...</p>
+        </div>
+      </div>
+
+      <!-- No results -->
+      <div id="noPlayers" style="display:none;text-align:center;padding:48px;color:var(--fg-3);">
+        <div style="font-size:48px;margin-bottom:16px;">🔍</div>
+        <p>No players found. Try a different search.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
 <!-- ============ CHANGELOG PAGE ============ -->
 <div class="page" id="page-changelog">
   <section class="section" style="padding-top:120px;">
@@ -661,6 +732,8 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; colo
         <h4>Community</h4>
         <a href="https://discord.gg/VXy4pRqEQN" target="_blank">Discord</a>
         <a>Vote</a>
+        <a onclick="navigate('dynmap')">Map</a>
+        <a onclick="navigate('players')">Players</a>
         <a onclick="navigate('store')">Store</a>
         <a onclick="navigate('staff')">Staff</a>
         <a onclick="navigate('gallery')">Gallery</a>
@@ -930,6 +1003,118 @@ function filterFAQ() {
     item.style.display = match ? '' : 'none';
   });
 }
+
+
+// ============ DYNMAP ============
+function loadDynmap() {
+  const container = document.getElementById('dynmapContainer');
+  if (!container) return;
+
+  // Try to load the Dynmap iframe
+  // The Dynmap URL would be http://SERVER_IP:8123
+  const dynmapUrl = 'http://node1.hostingkarle.com:8123/';
+
+  // Create iframe
+  const iframe = document.createElement('iframe');
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+  iframe.src = dynmapUrl;
+  iframe.onload = function() {
+    container.innerHTML = '';
+    container.appendChild(iframe);
+    container.style.padding = '0';
+  };
+  iframe.onerror = function() {
+    container.innerHTML = '<div><div style="font-size:48px;margin-bottom:16px;">🗺️</div><p>Dynmap is not available.</p><p style="font-size:12px;margin-top:8px;">Install Dynmap plugin and port forward 8123.</p></div>';
+  };
+
+  // Set a timeout - if the iframe doesn't load in 5 seconds, show the setup message
+  setTimeout(function() {
+    if (container.querySelector('iframe') === null || container.querySelector('iframe') !== iframe) {
+      // Try to append the iframe anyway
+      container.innerHTML = '<div style="width:100%;height:100%;display:grid;place-items:center;"><div style="text-align:center;"><div style="font-size:48px;margin-bottom:16px;">🗺️</div><p>Waiting for Dynmap...</p><p style="font-size:12px;margin-top:8px;color:var(--fg-3);">If the map doesn't load, Dynmap isn't installed yet.<br>See instructions below.</p></div></div>';
+    }
+  }, 5000);
+
+  // Actually try to embed it
+  container.innerHTML = '';
+  container.appendChild(iframe);
+  container.style.padding = '0';
+}
+
+// ============ PLAYER PROFILES ============
+let allPlayers = [];
+let onlinePlayers = [];
+
+async function loadPlayers() {
+  const grid = document.getElementById('playersGrid');
+  if (!grid) return;
+
+  try {
+    // Fetch online players from mcsrvstat.us
+    const res = await fetch('https://api.mcsrvstat.us/3/node1.hostingkarle.com:25565');
+    const data = await res.json();
+
+    if (data.online && data.players && data.players.list) {
+      onlinePlayers = data.players.list;
+    } else if (data.online && data.players) {
+      // Some servers don't expose player names via API
+      onlinePlayers = [];
+      for (let i = 0; i < data.players.online; i++) {
+        onlinePlayers.push({ name: 'Player ' + (i+1), uuid: '', online: true });
+      }
+    } else {
+      onlinePlayers = [];
+    }
+
+    // Render player cards
+    if (onlinePlayers.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg-3);"><div style="font-size:48px;margin-bottom:16px;">😴</div><p>No players online right now.</p><p style="font-size:12px;margin-top:8px;">Join the server and be the first!</p></div>';
+      return;
+    }
+
+    grid.innerHTML = onlinePlayers.map(p => {
+      const name = p.name || p.uuid || 'Unknown';
+      const avatarUrl = p.uuid
+        ? 'https://minotar.net/avatar/' + p.uuid + '/64'
+        : 'https://minotar.net/avatar/' + name + '/64';
+      return '<div class="player-card" data-name="' + name.toLowerCase() + '" style="background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;gap:16px;align-items:center;transition:all 0.2s;cursor:pointer;" onmouseover="this.style.borderColor='var(--emerald)'" onmouseout="this.style.borderColor='var(--border)'">' +
+        '<div style="width:48px;height:48px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#161b24;"><img src="' + avatarUrl + '" style="width:48px;height:48px;display:block;" loading="lazy" onerror="this.style.display=\'none\'"></div>' +
+        '<div style="flex:1;min-width:0;">' +
+        '<div style="font-size:16px;font-weight:700;color:var(--fg);">' + name + '</div>' +
+        '<div style="font-size:12px;color:var(--emerald);font-family:var(--font-mono);margin-top:2px;">● Online</div>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+
+    allPlayers = onlinePlayers;
+
+  } catch (e) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--fg-3);"><div style="font-size:48px;margin-bottom:16px;">⚠️</div><p>Could not load player data.</p><p style="font-size:12px;margin-top:8px;">Make sure the server is online.</p></div>';
+  }
+}
+
+function filterPlayers() {
+  const q = document.getElementById('playerSearchInput').value.toLowerCase();
+  const cards = document.querySelectorAll('.player-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const match = card.dataset.name.includes(q);
+    card.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  document.getElementById('noPlayers').style.display = visible === 0 && cards.length > 0 ? 'block' : 'none';
+}
+
+// Load data when navigating to those pages
+const originalNavigate = navigate;
+navigate = function(page) {
+  originalNavigate(page);
+  if (page === 'dynmap') loadDynmap();
+  if (page === 'players') loadPlayers();
+};
+
 
 document.getElementById('changelogList').innerHTML = CHANGELOG.map(c => `
   <div class="changelog-item">
